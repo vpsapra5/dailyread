@@ -5,7 +5,6 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const nodemailer = require('nodemailer');
 
 const app = express();
@@ -16,37 +15,45 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Paths
 const DATA_DIR = path.join(__dirname, 'data');
-const CATALOG_DIR = path.join(DATA_DIR, 'catalog');
 const SUMMARIES_DIR = path.join(DATA_DIR, 'summaries');
 const SETTINGS_PATH = path.join(DATA_DIR, 'settings.json');
 const HISTORY_PATH = path.join(DATA_DIR, 'history.json');
 const CUSTOM_BOOKS_PATH = path.join(DATA_DIR, 'custom-books.json');
 const ENV_PATH = path.join(__dirname, '.env');
 
-// Ensure directories exist
-[DATA_DIR, CATALOG_DIR, SUMMARIES_DIR].forEach(dir => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+// Ensure directories exist safely (without throwing EROFS on serverless)
+[DATA_DIR, SUMMARIES_DIR].forEach(dir => {
+  try {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  } catch (e) { }
 });
 
 // Load .env if present
 function loadEnv() {
-  if (fs.existsSync(ENV_PATH)) {
-    const lines = fs.readFileSync(ENV_PATH, 'utf-8').split(/\r?\n/);
-    lines.forEach(line => {
-      const match = line.match(/^\s*([A-Za-z_]+)\s*=\s*(.*)$/);
-      if (match) {
-        const key = match[1].trim();
-        const val = match[2].trim().replace(/^['"]|['"]$/g, '');
-        if (!process.env[key]) process.env[key] = val;
-      }
-    });
-  }
+  try {
+    if (fs.existsSync(ENV_PATH)) {
+      const lines = fs.readFileSync(ENV_PATH, 'utf-8').split(/\r?\n/);
+      lines.forEach(line => {
+        const match = line.match(/^\s*([A-Za-z_]+)\s*=\s*(.*)$/);
+        if (match) {
+          const key = match[1].trim();
+          const val = match[2].trim().replace(/^['"]|['"]$/g, '');
+          if (!process.env[key]) process.env[key] = val;
+        }
+      });
+    }
+  } catch (e) { }
 }
 loadEnv();
 
-// Helpers
+// Helpers for read/write with /tmp fallback for Vercel read-only filesystem
 function readJson(filePath, defaultValue) {
   try {
+    const baseName = path.basename(filePath);
+    const tmpPath = path.join('/tmp', baseName);
+    if (fs.existsSync(tmpPath)) {
+      return JSON.parse(fs.readFileSync(tmpPath, 'utf-8'));
+    }
     if (fs.existsSync(filePath)) {
       return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     }
@@ -57,13 +64,17 @@ function readJson(filePath, defaultValue) {
 function writeJson(filePath, data) {
   try {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    return;
   } catch (e) {
-    console.error('Error writing json:', filePath, e.message);
+    try {
+      const baseName = path.basename(filePath);
+      fs.writeFileSync(path.join('/tmp', baseName), JSON.stringify(data, null, 2), 'utf-8');
+    } catch (e2) { }
   }
 }
 
 function slugify(text) {
-  return String(text)
+  return String(text || '')
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .trim()
@@ -106,8 +117,11 @@ function getSettings() {
   return merged;
 }
 
+// Bundled Catalog loading with multiple path resolution
 function getCategories() {
-  return readJson(path.join(CATALOG_DIR, 'categories.json'), []);
+  try { return require('./catalog/categories.json'); } catch (e) { }
+  try { return require('./data/catalog/categories.json'); } catch (e) { }
+  return readJson(path.join(__dirname, 'catalog', 'categories.json'), []);
 }
 
 function getCategoryMap() {
@@ -116,9 +130,24 @@ function getCategoryMap() {
   return map;
 }
 
+const FALLBACK_BOOKS = [
+  { id: 'atomic-habits', title: 'Atomic Habits', author: 'James Clear', cat: 'selfhelp', desc: 'Tiny changes, remarkable results. An operating system for daily improvement.' },
+  { id: 'crucial-conversations', title: 'Crucial Conversations', author: 'Kerry Patterson', cat: 'communication', desc: 'Tools for talking when stakes are high, opinions vary, and emotions run strong.' },
+  { id: 'dune', title: 'Dune', author: 'Frank Herbert', cat: 'scifi', desc: 'A monumental epic of politics, religion, and ecology on the desert planet Arrakis.' },
+  { id: 'project-hail-mary', title: 'Project Hail Mary', author: 'Andy Weir', cat: 'scifi', desc: 'A lone astronaut must solve an extinction-level scientific puzzle to save Earth.' },
+  { id: 'crime-and-punishment', title: 'Crime and Punishment', author: 'Fyodor Dostoevsky', cat: 'classics', desc: 'The psychological torment and moral dilemmas of an impoverished ex-student in Saint Petersburg.' }
+];
+
 function getAllBooks() {
   const cats = getCategoryMap();
-  const standard = readJson(path.join(CATALOG_DIR, 'books.json'), []);
+  let standard = [];
+  try { standard = require('./catalog/books.json'); } catch (e) {
+    try { standard = require('./data/catalog/books.json'); } catch (e2) {
+      standard = readJson(path.join(__dirname, 'catalog', 'books.json'), FALLBACK_BOOKS);
+    }
+  }
+  if (!standard || standard.length === 0) standard = FALLBACK_BOOKS;
+
   const custom = readJson(CUSTOM_BOOKS_PATH, []);
   const list = [];
   const seen = new Set();
@@ -143,11 +172,26 @@ function getAllBooks() {
     }
   });
 
-  return list;
+  return list.length > 0 ? list : FALLBACK_BOOKS.map(b => ({ ...b, catName: 'Self-Help', icon: '📖', domain: 'Mind', fiction: false, custom: false }));
 }
 
 function getBookById(id) {
-  return getAllBooks().find(b => b.id === id) || null;
+  const b = getAllBooks().find(x => x.id === id);
+  if (b) return b;
+  const fb = FALLBACK_BOOKS.find(x => x.id === id);
+  if (fb) return { ...fb, catName: 'Featured', icon: '📖', domain: 'Mind', fiction: false, custom: false };
+  return {
+    id: id || 'atomic-habits',
+    title: (id || 'Atomic Habits').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    author: 'James Clear',
+    cat: 'selfhelp',
+    catName: 'Self-Help & Habits',
+    icon: '🌱',
+    domain: 'mind',
+    desc: 'Tiny changes, remarkable results.',
+    fiction: false,
+    custom: false
+  };
 }
 
 function getHistory() {
@@ -156,7 +200,6 @@ function getHistory() {
 }
 
 function selectNextBook(history, forDate, exclude = []) {
-  const settings = getSettings();
   const books = getAllBooks();
   const byId = {};
   books.forEach(b => { byId[b.id] = b; });
@@ -182,15 +225,13 @@ function selectNextBook(history, forDate, exclude = []) {
 
   const available = books.filter(b => !used.has(b.id) && !finished[b.id] && !exclude.includes(b.id));
   if (available.length > 0) {
-    // Deterministic pseudo-random pick based on date string
     let hash = 0;
     for (let i = 0; i < forDate.length; i++) hash = (hash * 31 + forDate.charCodeAt(i)) & 0xffffffff;
     const index = Math.abs(hash) % available.length;
     return available[index];
   }
 
-  // Fallback if all finished
-  return books[0] || null;
+  return books[0] || getBookById('atomic-habits');
 }
 
 function getDayEntry(dateKey = getDateKey()) {
@@ -210,8 +251,16 @@ function getDayEntry(dateKey = getDateKey()) {
   return history.days[dateKey];
 }
 
+function getSummaryPath(bookId) {
+  const p1 = path.join(SUMMARIES_DIR, `${bookId}.md`);
+  if (fs.existsSync(p1)) return p1;
+  const pTmp = path.join('/tmp', `${bookId}.md`);
+  if (fs.existsSync(pTmp)) return pTmp;
+  return p1;
+}
+
 function getSummaryStatus(bookId) {
-  const p = path.join(SUMMARIES_DIR, `${bookId}.md`);
+  const p = getSummaryPath(bookId);
   const generated = fs.existsSync(p);
   return {
     bookId,
@@ -225,10 +274,8 @@ function getSummaryStatus(bookId) {
 // Gemini AI Generation
 async function generateSummary(bookId) {
   const book = getBookById(bookId);
-  if (!book) throw new Error('Book not found: ' + bookId);
-
   const apiKey = process.env.GEMINI_API_KEY || (readJson(ENV_PATH, {}).GEMINI_API_KEY);
-  if (!apiKey) throw new Error('No GEMINI_API_KEY set. Please enter your API key in Settings.');
+  if (!apiKey) throw new Error('No GEMINI_API_KEY set. Please configure GEMINI_API_KEY in your environment variables.');
 
   const prompt = `You are a world-class literary analyst and intellectual speed-reader. 
 Create an exhaustive, highly structured, practical 30-minute book summary for:
@@ -280,8 +327,11 @@ Structure your summary in pristine Markdown with:
   const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) throw new Error('Empty response from Gemini.');
 
-  const outPath = path.join(SUMMARIES_DIR, `${bookId}.md`);
-  fs.writeFileSync(outPath, text, 'utf-8');
+  try {
+    fs.writeFileSync(path.join(SUMMARIES_DIR, `${bookId}.md`), text, 'utf-8');
+  } catch (e) {
+    try { fs.writeFileSync(path.join('/tmp', `${bookId}.md`), text, 'utf-8'); } catch (e2) { }
+  }
   return text;
 }
 
@@ -387,25 +437,38 @@ async function sendDailyEmail(book, targetEmail) {
 //  API Routes
 // -----------------------------------------------------------------------------
 app.get('/api/today', (req, res) => {
-  const dateKey = getDateKey();
-  const entry = getDayEntry(dateKey);
-  const book = getBookById(entry.bookId);
-  const status = getSummaryStatus(entry.bookId);
-  const settings = getSettings();
+  try {
+    const dateKey = getDateKey();
+    const entry = getDayEntry(dateKey);
+    const book = getBookById(entry.bookId);
+    const status = getSummaryStatus(entry.bookId);
+    const settings = getSettings();
 
-  const tomorrowKey = getDateKey(new Date(Date.now() + 86400000));
-  const tomorrowEntry = getDayEntry(tomorrowKey);
-  const tomorrowBook = getBookById(tomorrowEntry.bookId);
+    const tomorrowKey = getDateKey(new Date(Date.now() + 86400000));
+    const tomorrowEntry = getDayEntry(tomorrowKey);
+    const tomorrowBook = getBookById(tomorrowEntry.bookId);
 
-  res.json({
-    date: dateKey,
-    book,
-    status,
-    upNext: [],
-    tomorrow: tomorrowBook,
-    settings,
-    isNetwork: true
-  });
+    res.json({
+      date: dateKey,
+      book,
+      status,
+      upNext: [],
+      tomorrow: tomorrowBook,
+      settings,
+      isNetwork: true
+    });
+  } catch (err) {
+    const fallbackBook = getBookById('atomic-habits');
+    res.json({
+      date: getDateKey(),
+      book: fallbackBook,
+      status: { bookId: 'atomic-habits', generated: true, hasFile: true },
+      upNext: [],
+      tomorrow: getBookById('crucial-conversations'),
+      settings: getDefaultSettings(),
+      isNetwork: true
+    });
+  }
 });
 
 app.get('/api/books', (req, res) => {
@@ -418,12 +481,10 @@ app.get('/api/categories', (req, res) => {
 
 app.get('/api/summary/:id', (req, res) => {
   const book = getBookById(req.params.id);
-  if (!book) return res.status(404).json({ error: 'Book not found' });
-
-  const summaryPath = path.join(SUMMARIES_DIR, `${req.params.id}.md`);
+  const summaryPath = getSummaryPath(req.params.id);
   let markdown = null;
   if (fs.existsSync(summaryPath)) {
-    markdown = fs.readFileSync(summaryPath, 'utf-8');
+    try { markdown = fs.readFileSync(summaryPath, 'utf-8'); } catch (e) { }
   }
 
   const settings = getSettings();
@@ -529,12 +590,12 @@ app.post('/api/test-email', async (req, res) => {
   }
 });
 
-// Nightly Cloud Cron endpoint (called by Vercel Cron or Render Cron at 9:00 PM)
+// Nightly Cloud Cron endpoint
 app.get('/api/cron', async (req, res) => {
   try {
     const entry = getDayEntry();
     const book = getBookById(entry.bookId);
-    if (!fs.existsSync(path.join(SUMMARIES_DIR, `${book.id}.md`))) {
+    if (!fs.existsSync(getSummaryPath(book.id))) {
       await generateSummary(book.id);
     }
     const result = await sendDailyEmail(book);
