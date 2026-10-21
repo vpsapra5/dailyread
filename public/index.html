@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyRead — 30-Minute Daily Book Summaries</title>
+  <meta name="description" content="Read one high-impact 30-minute book summary every day from the world's greatest books across finance, psychology, philosophy, sci-fi and growth.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DailyRead">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f59e0b'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
+</head>
+<body>
+  <div id="app-root">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-container">
+        <a href="#/today" class="brand-link" id="brand-home-link">
+          <div class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <span class="brand-title">Daily<span class="brand-accent">Read</span></span>
+        </a>
+
+        <nav class="main-nav" id="main-nav-bar">
+          <a href="#/today" class="nav-item active" id="nav-today">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Today
+          </a>
+          <a href="#/archive" class="nav-item" id="nav-archive">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            Archive
+          </a>
+          <a href="#/library" class="nav-item" id="nav-library">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Library
+          </a>
+          <a href="#/stats" class="nav-item" id="nav-stats">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            Growth & Stats
+          </a>
+          <a href="#/settings" class="nav-item" id="nav-settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Settings
+          </a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="streak-badge" id="header-streak-badge" title="Your current reading streak">
+            <span class="streak-flame">🔥</span>
+            <span id="streak-count-text">0 day streak</span>
+          </div>
+
+          <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle Dark / Paper / Light theme" aria-label="Toggle theme">
+            <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Viewport Router Container -->
+    <main class="main-viewport" id="main-viewport">
+      
+      <!-- ================================================================ -->
+      <!-- VIEW 1: TODAY -->
+      <!-- ================================================================ -->
+      <section class="view-section active" id="view-today">
+        <div class="today-grid">
+          <!-- Main Hero Card -->
+          <div class="today-hero-card" id="today-hero-card">
+            <div class="card-ambient-light"></div>
+            
+            <div class="today-eyebrow">
+              <span class="daily-tag" id="today-date-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                TODAY'S 30-MIN READ
+              </span>
+              <span class="category-chip" id="today-category-badge">🌱 Self-Help & Habits</span>
+            </div>
+
+            <div class="book-hero-content">
+              <div class="book-cover-container">
+                <div class="book-cover" id="today-book-cover">
+                  <div class="book-cover-art-inner">
+                    <span class="cover-cat-badge" id="cover-cat-label">Habits</span>
+                    <div>
+                      <h2 class="cover-book-title" id="cover-title-label">Atomic Habits</h2>
+                      <p class="cover-book-author" id="cover-author-label">James Clear</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-details">
+                <h1 class="hero-title" id="today-book-title">Loading today's book...</h1>
+                <p class="hero-author" id="today-book-author">by Author</p>
+
+                <div class="reading-meta-bar">
+                  <span class="meta-pill meta-pill-accent" id="today-reading-time">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    ~30 min read (6,500 words)
+                  </span>
+                  <span class="meta-pill" id="today-domain-pill">Domain: Mind</span>
+                  <span class="meta-pill" id="today-reminder-pill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    Daily at 07:30
+                  </span>
+                </div>
+
+                <div class="hero-quote-block" id="today-hero-quote">
+                  "Tiny changes, remarkable results. An operating system for daily improvement."
+                </div>
+
+                <div class="hero-actions">
+                  <button class="btn btn-primary" id="today-start-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Start 30-Min Read
+                  </button>
+                  <button class="btn btn-secondary" id="today-skip-btn" title="Skip to another book today">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                    Skip / Next
+                  </button>
+                  <button class="btn btn-secondary" id="today-pick-btn" title="Choose a specific book from library">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Pick Book
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Banner (generating / cached) -->
+            <div class="status-banner ready" id="today-status-banner">
+              <div style="display:flex; align-items:center; gap: 0.6rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span id="status-banner-text">Summary is ready for your 30-minute daily session.</span>
+              </div>
+              <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.8rem;" id="regenerate-summary-btn">Regenerate</button>
+            </div>
+          </div>
+
+          <!-- Sidebar Column: Up Next & Sneak Peek -->
+          <div class="today-sidebar">
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">
+                <span>Up Next In Queue</span>
+                <button class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;" id="sidebar-browse-btn">Browse</button>
+              </h3>
+              <div class="upnext-list" id="sidebar-queue-list">
+                <p style="color: var(--text-muted); font-size: 0.85rem;">No books in your queue. Add from the library!</p>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">
+                <span>Tomorrow's Preview</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Midnight pick</span>
+              </h3>
+              <div class="upnext-item" id="sidebar-tomorrow-card" style="cursor: default;">
+                <div class="upnext-thumb" id="tomorrow-thumb">⏳</div>
+                <div class="upnext-info">
+                  <div class="upnext-book-title" id="tomorrow-title">Rotating curriculum</div>
+                  <div class="upnext-book-author" id="tomorrow-category">Different category guaranteed</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">CLI Quick Reference</h3>
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); line-height: 1.8;">
+                <div><span style="color:var(--accent-gold);">dailyread</span> start</div>
+                <div><span style="color:var(--accent-gold);">dailyread</span> today --terminal</div>
+                <div><span style="color:var(--accent-gold);">dailyread</span> set-time 07:30</div>
+                <div><span style="color:var(--accent-gold);">dailyread</span> next</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 2: READER -->
+      <!-- ================================================================ -->
+      <section class="view-section" id="view-reader">
+        <!-- Floating Reading Progress Indicator -->
+        <div class="reader-progress-bar-wrap">
+          <div class="reader-progress-fill" id="reader-progress-fill"></div>
+        </div>
+
+        <div class="reader-container">
+          <!-- Reader Action Control Bar -->
+          <div class="reader-controls-bar">
+            <div class="reader-btn-group">
+              <button class="reader-tool-btn" id="reader-back-btn" title="Back to Today">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Today
+              </button>
+              <button class="reader-tool-btn active" id="reader-mode-toggle" title="Switch between Paged (Kindle) and Continuous Scroll">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <span id="reader-mode-label">Paged Mode</span>
+              </button>
+              <button class="reader-tool-btn" id="reader-font-toggle" title="Toggle Serif / Sans Font">
+                <span style="font-family: var(--font-serif); font-weight:700;">Aa</span>
+              </button>
+              <button class="reader-tool-btn" id="reader-font-minus" title="Decrease font size">A-</button>
+              <button class="reader-tool-btn" id="reader-font-plus" title="Increase font size">A+</button>
+            </div>
+
+            <!-- Speech Audio Controls -->
+            <div class="reader-btn-group">
+              <button class="reader-tool-btn" id="reader-tts-play" title="Listen aloud">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                <span id="tts-btn-text">Listen</span>
+              </button>
+              <button class="reader-tool-btn" id="reader-tts-speed" title="Change playback speed" style="font-family:var(--font-mono); font-size:0.75rem;">1.0x</button>
+            </div>
+
+            <div class="reading-est-time" id="reader-time-remaining">
+              ⏱️ 30 min left
+            </div>
+          </div>
+
+          <!-- Kindle Viewport Frame -->
+          <div class="kindle-viewport" id="kindle-viewport">
+            <!-- Kindle Top Bar (Unified for Mobile & Desktop) -->
+            <div class="kindle-top-bar" id="kindle-top-bar">
+              <div class="kindle-top-left">
+                <button class="kindle-top-btn" id="kindle-back-btn" title="Back to Today / Archive">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  <span class="kindle-back-text">Back</span>
+                </button>
+              </div>
+
+              <div class="kindle-top-center" id="kindle-top-center-zone" title="Tap center to toggle Zen Mode">
+                <span class="kindle-top-title" id="kindle-top-title">Daily Book Summary</span>
+                <span class="kindle-top-hint" id="kindle-top-hint">Tap center for Zen Mode</span>
+              </div>
+
+              <div class="kindle-top-right">
+                <button class="kindle-top-btn" id="kindle-aa-btn" title="Reading Settings & Appearance (Aa)">
+                  <span style="font-family: var(--font-serif); font-weight:700; font-size:0.95rem;">Aa</span>
+                </button>
+                <button class="kindle-top-btn" id="kindle-theme-btn" title="Toggle Theme (Dark, Paper, Light)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+                <button class="kindle-top-btn" id="kindle-tts-btn" title="Listen Aloud">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Left Turn Area -->
+            <div class="page-turn-zone zone-left" id="page-zone-prev" title="Previous Page (Left Arrow or Click)">
+              <div class="page-turn-chevron">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </div>
+            </div>
+
+            <!-- Multi-column track for text -->
+            <div class="kindle-column-viewport" id="kindle-column-viewport">
+              <div class="kindle-column-track" id="kindle-column-track">
+                <!-- Reader Markdown Content -->
+                <article class="reader-content" id="reader-article-content">
+                  <div style="text-align: center; padding: 4rem 1rem;">
+                    <div class="loading-dots" style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem;">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <p style="color: var(--text-secondary);">Preparing your summary...</p>
+                  </div>
+                </article>
+
+                <!-- Book Completion Box in Paged Mode (appended at end of track) -->
+                <div class="reader-finish-box" id="reader-finish-box" style="margin-top:2rem;">
+                  <div style="font-size: 2.75rem; margin-bottom: 0.5rem;">🎉</div>
+                  <h2 class="finish-title">Congratulations on completing today's read!</h2>
+                  <p class="finish-desc">You've invested 30 minutes in compounding your knowledge, clarity, and life skills.</p>
+                  <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+                    <button class="btn btn-primary" id="reader-complete-btn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      Mark as Finished (+1 Streak)
+                    </button>
+                    <button class="btn btn-secondary" id="reader-export-btn">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      Download Markdown (.md)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Turn Area -->
+            <div class="page-turn-zone zone-right" id="page-zone-next" title="Next Page (Right Arrow or Click)">
+              <div class="page-turn-chevron">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </div>
+
+            <!-- Kindle Bottom Status Bar -->
+            <div class="kindle-bottom-bar" id="kindle-bottom-bar">
+              <div class="kindle-bar-left">
+                <button class="kindle-nav-btn" id="kindle-btn-prev" title="Previous Page (Left Arrow)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  Prev
+                </button>
+                <span id="kindle-book-header" style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600;">Atomic Habits</span>
+              </div>
+
+              <div class="kindle-scrubber-wrap">
+                <input type="range" class="kindle-scrub-slider" id="kindle-page-scrubber" min="1" max="1" value="1" title="Drag to jump to page">
+                <span class="page-indicator-badge" id="kindle-page-indicator">Page 1 of 1</span>
+              </div>
+
+              <div class="kindle-bar-right">
+                <span id="kindle-progress-pct" style="font-family:var(--font-mono); font-size:0.8rem; font-weight:600;">0%</span>
+                <span id="kindle-time-left" style="font-size:0.78rem; color:var(--text-muted);">⏱️ 30m left</span>
+                <button class="kindle-nav-btn" id="kindle-btn-next" title="Next Page (Right Arrow or Space)">
+                  Next
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Zen Mode Subtle Floating Indicator for Mobile -->
+            <div class="zen-mini-indicator" id="zen-mini-indicator" title="Tap center to toggle reading bars">
+              <span id="zen-mini-page">Page 1 of 1</span>
+              <span class="zen-mini-dot">•</span>
+              <span id="zen-mini-pct">0%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW: ARCHIVE (Past Summaries & Catch-Up) -->
+      <!-- ================================================================ -->
+      <section class="view-section" id="view-archive">
+        <div class="archive-container">
+          <!-- Archive Hero Header -->
+          <div class="archive-header-card">
+            <div class="archive-header-content">
+              <div class="archive-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                DAILY SUMMARY ARCHIVE
+              </div>
+              <h1 class="archive-title">Past Daily Reads & Catch-Up</h1>
+              <p class="archive-subtitle">Read missed 30-minute books, review key takeaways, and mark any day complete.</p>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="archive-stats-ribbon">
+              <div class="archive-stat-pill">
+                <span class="stat-pill-label">Total Days</span>
+                <span class="stat-pill-value" id="archive-stat-total">0</span>
+              </div>
+              <div class="archive-stat-pill">
+                <span class="stat-pill-label">Completed</span>
+                <span class="stat-pill-value stat-completed" id="archive-stat-completed">0</span>
+              </div>
+              <div class="archive-stat-pill">
+                <span class="stat-pill-label">Pending</span>
+                <span class="stat-pill-value stat-pending" id="archive-stat-pending">0</span>
+              </div>
+              <div class="archive-stat-pill">
+                <span class="stat-pill-label">Completion</span>
+                <span class="stat-pill-value stat-rate" id="archive-stat-rate">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="archive-toolbar">
+            <div class="search-input-wrap archive-search-wrap">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" class="search-input" id="archive-search-input" placeholder="Search archive by title, author, or subject...">
+            </div>
+
+            <div class="archive-filter-tabs">
+              <button class="archive-filter-btn active" data-filter="all" id="archive-filter-all">All Days</button>
+              <button class="archive-filter-btn" data-filter="unread" id="archive-filter-unread">Pending / Catch-Up</button>
+              <button class="archive-filter-btn" data-filter="completed" id="archive-filter-completed">Completed</button>
+            </div>
+          </div>
+
+          <!-- Archive List Grid -->
+          <div class="archive-cards-list" id="archive-cards-list">
+            <div class="archive-loading-state">
+              <p>Loading summary archive...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 3: LIBRARY -->
+      <!-- ================================================================ -->
+      <section class="view-section" id="view-library">
+        <div class="library-header">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <h1 class="library-title">The World's Greatest Books</h1>
+              <p style="color: var(--text-secondary);">Curated library across 32 subjects for complete growth, perspective, and mastery.</p>
+            </div>
+            <button class="btn btn-secondary" id="lib-add-custom-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add Custom Book
+            </button>
+          </div>
+
+          <div class="library-controls">
+            <div class="search-input-wrap">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" class="search-input" id="library-search-input" placeholder="Search 220+ books, authors, or subjects...">
+            </div>
+
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <select class="form-input" id="lib-status-filter" style="width:auto; padding:0.6rem 1rem; border-radius: var(--radius-full);">
+                <option value="all">All Books</option>
+                <option value="ready">Summary Ready</option>
+                <option value="unread">Unread</option>
+                <option value="finished">Finished</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Domain Pills Filter -->
+          <div class="filter-pills-row" id="domain-pills-container">
+            <button class="domain-pill active" data-domain="all">All Domains</button>
+            <button class="domain-pill" data-domain="mind">🧠 Mind & Habits</button>
+            <button class="domain-pill" data-domain="influence">🤝 Influence & Leadership</button>
+            <button class="domain-pill" data-domain="money">💰 Money & Business</button>
+            <button class="domain-pill" data-domain="wisdom">🏛️ Wisdom & Philosophy</button>
+            <button class="domain-pill" data-domain="world">📜 History & Humanity</button>
+            <button class="domain-pill" data-domain="science">🔭 Science & Tech</button>
+            <button class="domain-pill" data-domain="body">💪 Health & Longevity</button>
+            <button class="domain-pill" data-domain="imagination">🎨 Fiction & Art</button>
+          </div>
+        </div>
+
+        <!-- Books Grid -->
+        <div class="books-grid" id="library-books-grid">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 4: STATS & GROWTH WHEEL -->
+      <!-- ================================================================ -->
+      <section class="view-section" id="view-stats">
+        <div class="stats-hero-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="stats-streak-val">0</div>
+            <div class="metric-label">Current Streak (Days)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="stats-best-streak-val">0</div>
+            <div class="metric-label">Best Reading Streak</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="stats-finished-val">0</div>
+            <div class="metric-label">Books Mastered</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="stats-hours-val">0.0</div>
+            <div class="metric-label">Hours Invested</div>
+          </div>
+        </div>
+
+        <div class="stats-visual-grid">
+          <!-- Growth Wheel (Radar Canvas) -->
+          <div class="visual-card">
+            <h2 class="visual-title">
+              <span>The 8 Growth Domains</span>
+              <span style="font-size:0.8rem; color:var(--text-muted);">Curriculum Balance</span>
+            </h2>
+            <div class="growth-wheel-wrap">
+              <canvas id="growth-radar-canvas" width="380" height="380"></canvas>
+            </div>
+          </div>
+
+          <!-- Activity Heatmap -->
+          <div class="visual-card">
+            <h2 class="visual-title">
+              <span>Reading Activity (Last 12 Weeks)</span>
+              <span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">84 Days</span>
+            </h2>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:1rem;">Consistency compounds: just 30 minutes a day equals 365 books absorbed per year.</p>
+            <div class="heatmap-grid" id="stats-heatmap-grid">
+              <!-- Rendered via app.js -->
+            </div>
+            <div style="display:flex; align-items:center; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem; font-size:0.75rem; color:var(--text-muted);">
+              <span>Less</span>
+              <div class="heatmap-day" style="width:14px; height:14px;"></div>
+              <div class="heatmap-day" data-level="1" style="width:14px; height:14px;"></div>
+              <div class="heatmap-day" data-level="2" style="width:14px; height:14px;"></div>
+              <div class="heatmap-day" data-level="3" style="width:14px; height:14px;"></div>
+              <span>More</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recently Finished Books Table -->
+        <div class="visual-card">
+          <h2 class="visual-title">Reading Journey History</h2>
+          <div id="stats-history-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">No finished books yet. Read today's book to begin your journey!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- VIEW 5: SETTINGS -->
+      <!-- ================================================================ -->
+      <section class="view-section" id="view-settings">
+        <div class="settings-container">
+          <!-- Daily Notification Schedule -->
+          <div class="settings-card">
+            <h2 class="settings-section-title">Daily Reminder & Schedule</h2>
+            <p class="settings-section-desc">DailyRead registers a native Windows background task so you get an interactive desktop notification every day at your exact preferred time, even when the browser is closed.</p>
+            
+            <form id="settings-schedule-form">
+              <div class="form-group">
+                <label class="form-label" for="setting-notify-time">Daily Notification Time</label>
+                <div style="display:flex; gap:0.75rem; max-width:280px;">
+                  <input type="time" class="form-input" id="setting-notify-time" value="07:30" required>
+                  <button type="submit" class="btn btn-primary" id="save-time-btn">Save Time</button>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top:1.5rem;">
+                <label class="form-label">Active Days of Week</label>
+                <div class="days-picker-row" id="settings-days-picker">
+                  <!-- Generated dynamically in JS -->
+                </div>
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; margin-top:1.75rem; padding-top:1.25rem; border-top:1px solid var(--border-subtle);">
+                <button type="button" class="btn btn-secondary" id="test-notification-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                  Send Test Toast Notification
+                </button>
+                <span id="task-status-text" style="font-size:0.85rem; color:var(--text-muted);">Checking Windows Task...</span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Email Delivery Schedule (9:00 PM) Card -->
+          <div class="settings-card" id="email-notifications-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <h2 class="settings-section-title">📧 Daily Email Delivery (9:00 PM)</h2>
+                <p class="settings-section-desc">Get tonight's 30-minute book summary delivered to your inbox every evening so you can read right on your phone or in Gmail.</p>
+              </div>
+              <label style="display:inline-flex; align-items:center; gap:0.6rem; cursor:pointer; background:rgba(255,255,255,0.06); padding:0.4rem 0.9rem; border-radius:9999px; border:1px solid var(--border-subtle); font-size:0.85rem; font-weight:600;">
+                <input type="checkbox" id="setting-email-enabled" checked style="accent-color:var(--accent-gold); width:16px; height:16px;">
+                <span>Email Active</span>
+              </label>
+            </div>
+
+            <form id="settings-email-form" style="margin-top:1.25rem;">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1rem;">
+                <div class="form-group">
+                  <label class="form-label" for="setting-email-target">Recipient Email Address</label>
+                  <input type="email" class="form-input" id="setting-email-target" value="vpsapra5@gmail.com" required placeholder="name@gmail.com">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="setting-email-sender">Your Sending Gmail Address</label>
+                  <input type="email" class="form-input" id="setting-email-sender" value="vpsapra5@gmail.com" required placeholder="name@gmail.com">
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top:1.25rem;">
+                <label class="form-label" for="setting-email-password">Google App Password (16 letters)</label>
+                <div style="display:flex; gap:0.75rem;">
+                  <input type="password" class="form-input" id="setting-email-password" placeholder="e.g. abcd efgh ijkl mnop" autocomplete="new-password">
+                  <button type="submit" class="btn btn-primary" id="save-email-btn" style="white-space:nowrap;">Save Email</button>
+                </div>
+                <div style="margin-top:0.75rem; padding:0.85rem 1rem; background:rgba(245, 158, 11, 0.08); border-left:3px solid var(--accent-gold); border-radius:6px; font-size:0.84rem; line-height:1.55; color:var(--text-secondary);">
+                  <strong style="color:var(--accent-gold);">⚡ How to get your 16-letter App Password in 30 seconds:</strong><br>
+                  1. Open <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener" style="color:var(--accent-gold); text-decoration:underline; font-weight:600;">myaccount.google.com/apppasswords</a> in your browser.<br>
+                  2. Enter <strong>DailyRead</strong> as the app name and click <strong>Create</strong>.<br>
+                  3. Copy the 16-letter password Google shows you and paste it into the box above!
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top:1.2rem;">
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-size:0.9rem; color:var(--text-primary);">
+                  <input type="checkbox" id="setting-email-full-summary" style="accent-color:var(--accent-gold); width:16px; height:16px;">
+                  <span>Include the <strong>entire full 30-minute book summary</strong> directly in the email body</span>
+                </label>
+              </div>
+
+              <details style="margin-top:1.2rem; font-size:0.85rem; color:var(--text-muted);">
+                <summary style="cursor:pointer; color:var(--text-secondary); font-weight:500;">Advanced: Use Resend API key instead of Gmail App Password</summary>
+                <div style="margin-top:0.6rem; padding:0.75rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:6px;">
+                  <label class="form-label" for="setting-email-resend">Resend API Key (Optional)</label>
+                  <input type="password" class="form-input" id="setting-email-resend" placeholder="re_123456789..." style="font-size:0.85rem;">
+                </div>
+              </details>
+
+              <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border-subtle);">
+                <button type="button" class="btn btn-secondary" id="test-email-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                  Send Test Email to vpsapra5@gmail.com
+                </button>
+                <span id="email-test-status" style="font-size:0.85rem; color:var(--text-muted);"></span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Mobile Phone & Tablet Access Card -->
+          <div class="settings-card" id="mobile-access-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <h2 class="settings-section-title">📱 Mobile Phone & Tablet Access</h2>
+                <p class="settings-section-desc">Read your daily 30-minute book summary on your iPhone, iPad, or Android phone with Kindle-style page flipping.</p>
+              </div>
+              <span class="badge" id="mobile-status-badge" style="background:rgba(245, 158, 11, 0.15); color:var(--accent-gold); border:1px solid rgba(245, 158, 11, 0.3); padding:0.35rem 0.75rem; border-radius:var(--radius-full); font-size:0.8rem; font-weight:600;">
+                Checking Wi-Fi...
+              </span>
+            </div>
+
+            <div class="mobile-access-grid" style="display:grid; grid-template-columns:auto 1fr; gap:1.75rem; margin-top:1.25rem; align-items:center;">
+              <div class="mobile-qr-wrap" id="mobile-qr-container" style="background:#fff; padding:10px; border-radius:var(--radius-md); box-shadow:var(--shadow-md); width:144px; height:144px; display:flex; align-items:center; justify-content:center; text-align:center;">
+                <!-- QR Code Injected dynamically via JS -->
+                <div style="color:#000; font-size:0.75rem; font-weight:600;">Generating QR...</div>
+              </div>
+
+              <div class="mobile-access-info">
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                  <label class="form-label" style="font-size:0.8rem;">Direct Mobile Browser URL</label>
+                  <div style="display:flex; gap:0.5rem; align-items:center;">
+                    <input type="text" class="form-input" id="mobile-url-input" readonly value="Detecting IP..." style="font-family:var(--font-mono); font-size:0.88rem; max-width:320px;">
+                    <button type="button" class="btn btn-secondary" id="copy-mobile-url-btn" title="Copy to clipboard">
+                      📋 Copy
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mobile-steps" style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+                  <p>1. Connect your phone to your home Wi-Fi network.</p>
+                  <p>2. Point your camera at the QR code, or type the URL above into Safari / Chrome.</p>
+                  <p>3. <strong>Native App Feel:</strong> Tap <span style="color:var(--text-primary); font-weight:600;">Share</span> → <span style="color:var(--accent-gold); font-weight:600;">"Add to Home Screen"</span> to read full-screen like a Kindle app.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-troubleshoot" id="mobile-troubleshoot-box" style="margin-top:1.25rem; padding:0.85rem 1.15rem; border-radius:var(--radius-md); background:rgba(255,255,255,0.02); border:1px solid var(--border-subtle); font-size:0.82rem; color:var(--text-muted);">
+              <span style="font-weight:600; color:var(--text-secondary); display:block; margin-bottom:0.25rem;">💡 If your phone cannot reach this URL:</span>
+              <span>Windows Firewall may block incoming ports by default. Run in Admin PowerShell: <code style="color:var(--accent-gold); font-family:var(--font-mono); font-size:0.78rem;">dailyread mobile --enable</code></span>
+            </div>
+          </div>
+
+          <!-- Reading Duration & Fiction Ratio -->
+          <div class="settings-card">
+            <h2 class="settings-section-title">Reading Preferences</h2>
+            <p class="settings-section-desc">Tailor how summaries are synthesized and structured.</p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+              <div class="form-group">
+                <label class="form-label" for="setting-summary-minutes">Summary Length</label>
+                <select class="form-input" id="setting-summary-minutes">
+                  <option value="15">15 Minutes (~3,500 words)</option>
+                  <option value="30" selected>30 Minutes (~6,500 words) [Recommended]</option>
+                  <option value="45">45 Minutes (~9,500 words)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-fiction-ratio">Fiction Ratio</label>
+                <select class="form-input" id="setting-fiction-ratio">
+                  <option value="0.0">Non-Fiction Only (0%)</option>
+                  <option value="0.2">Light Fiction (20%)</option>
+                  <option value="0.3" selected>Balanced (30% Fiction / 70% Non-Fiction)</option>
+                  <option value="0.5">Equal (50% Fiction / 50% Non-Fiction)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gemini AI Engine -->
+          <div class="settings-card">
+            <h2 class="settings-section-title">AI Summarization Engine</h2>
+            <p class="settings-section-desc">Powered by Google Gemini models for deep, faithful chapter-by-chapter breakdowns.</p>
+            
+            <form id="settings-key-form">
+              <div class="form-group">
+                <label class="form-label" for="setting-api-key">Gemini API Key</label>
+                <div style="display:flex; gap:0.75rem;">
+                  <input type="password" class="form-input" id="setting-api-key" placeholder="Enter key (or uses .env)" style="font-family:var(--font-mono);">
+                  <button type="submit" class="btn btn-secondary" id="save-key-btn">Update Key</button>
+                </div>
+                <small style="color:var(--text-muted); display:block; margin-top:0.4rem;">Get a free API key with no credit card at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent-gold); text-decoration:underline;">Google AI Studio</a>.</small>
+              </div>
+            </form>
+          </div>
+
+          <!-- Category Weights -->
+          <div class="settings-card">
+            <h2 class="settings-section-title">Subject Rotation Weights</h2>
+            <p class="settings-section-desc">Control how often categories appear in your 365-day rotation. (0 = Off, 0.5 = Less, 1.0 = Normal, 2.0 = More)</p>
+            <div class="weights-grid" id="settings-weights-grid">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Modal: Pick Book for Today -->
+    <div class="modal-overlay" id="pick-modal">
+      <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+          <h2 style="font-size:1.25rem; font-weight:700;">Choose Today's Book</h2>
+          <button class="reader-tool-btn" id="close-pick-modal">✕</button>
+        </div>
+        <div class="search-input-wrap" style="max-width:100%; margin-bottom:1rem;">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="search-input" id="modal-search-input" placeholder="Type title or author...">
+        </div>
+        <div id="modal-books-list" style="max-height:360px; overflow-y:auto; display:flex; flex-direction:column; gap:0.5rem;">
+          <!-- Items injected via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Custom Book -->
+    <div class="modal-overlay" id="custom-book-modal">
+      <div class="modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+          <h2 style="font-size:1.25rem; font-weight:700;">Add Custom Book to Library</h2>
+          <button class="reader-tool-btn" id="close-custom-modal">✕</button>
+        </div>
+        <form id="custom-book-form">
+          <div class="form-group">
+            <label class="form-label" for="custom-title-input">Book Title</label>
+            <input type="text" class="form-input" id="custom-title-input" required placeholder="e.g. Clean Code">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custom-author-input">Author Name</label>
+            <input type="text" class="form-input" id="custom-author-input" required placeholder="e.g. Robert C. Martin">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custom-cat-select">Category</label>
+            <select class="form-input" id="custom-cat-select" required>
+              <!-- Populated via JS -->
+            </select>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+            <button type="button" class="btn btn-secondary" id="cancel-custom-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="save-custom-btn">Add to Library</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Visible on mobile screens <= 680px, hidden in reader) -->
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+      <a href="#/today" class="mobile-nav-item active" id="m-nav-today">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Today</span>
+      </a>
+      <a href="#/archive" class="mobile-nav-item" id="m-nav-archive">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+        <span>Archive</span>
+      </a>
+      <a href="#/library" class="mobile-nav-item" id="m-nav-library">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>Library</span>
+      </a>
+      <a href="#/stats" class="mobile-nav-item" id="m-nav-stats">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Stats</span>
+      </a>
+      <a href="#/settings" class="mobile-nav-item" id="m-nav-settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <!-- Reading Appearance Bottom Sheet Modal (Apple Books / Kindle Style) -->
+    <div class="reader-sheet-backdrop" id="reader-appearance-sheet-backdrop">
+      <div class="reader-appearance-sheet" id="reader-appearance-sheet">
+        <div class="sheet-handle-bar"></div>
+        <div class="sheet-header">
+          <div class="sheet-title-group">
+            <h3 class="sheet-title">Reading Appearance</h3>
+            <span class="sheet-subtitle">Kindle & Apple Books ergonomics</span>
+          </div>
+          <button class="sheet-close-btn" id="sheet-close-btn" aria-label="Close settings">✕</button>
+        </div>
+
+        <!-- Font Size Row -->
+        <div class="sheet-section">
+          <div class="sheet-label-row">
+            <span class="sheet-label">Text Size</span>
+            <span class="sheet-val-badge" id="sheet-size-display">100%</span>
+          </div>
+          <div class="font-size-stepper">
+            <button class="stepper-btn" id="sheet-size-minus" title="Decrease font size">
+              <span style="font-size:0.9rem; font-weight:700;">A-</span>
+            </button>
+            <div class="stepper-track">
+              <div class="stepper-dots">
+                <span class="step-dot" data-val="0.95"></span>
+                <span class="step-dot active" data-val="1.02"></span>
+                <span class="step-dot" data-val="1.10"></span>
+                <span class="step-dot" data-val="1.20"></span>
+                <span class="step-dot" data-val="1.30"></span>
+              </div>
+            </div>
+            <button class="stepper-btn" id="sheet-size-plus" title="Increase font size">
+              <span style="font-size:1.15rem; font-weight:700;">A+</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Typography: Literata Serif vs Inter Sans -->
+        <div class="sheet-section">
+          <div class="sheet-label-row">
+            <span class="sheet-label">Typography</span>
+          </div>
+          <div class="segmented-control">
+            <button class="segment-btn active" id="sheet-font-serif">
+              <span style="font-family: var(--font-serif); font-size:1.1rem; font-weight:600;">Literata</span>
+              <span class="segment-sub">Warm Book Serif</span>
+            </button>
+            <button class="segment-btn" id="sheet-font-sans">
+              <span style="font-family: var(--font-sans); font-size:1.05rem; font-weight:600;">Inter</span>
+              <span class="segment-sub">Modern Clean Sans</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Color Themes (Obsidian Dark, Warm Sepia/Paper, Daylight) -->
+        <div class="sheet-section">
+          <div class="sheet-label-row">
+            <span class="sheet-label">Reading Theme</span>
+          </div>
+          <div class="theme-swatch-row">
+            <button class="theme-swatch swatch-dark active" data-sheet-theme="dark" id="sheet-theme-dark">
+              <span class="swatch-circle dark"></span>
+              <div class="swatch-text">
+                <div class="swatch-name">Obsidian</div>
+                <div class="swatch-sub">Night Dark</div>
+              </div>
+            </button>
+            <button class="theme-swatch swatch-paper" data-sheet-theme="paper" id="sheet-theme-paper">
+              <span class="swatch-circle paper"></span>
+              <div class="swatch-text">
+                <div class="swatch-name">Parchment</div>
+                <div class="swatch-sub">Warm Sepia</div>
+              </div>
+            </button>
+            <button class="theme-swatch swatch-light" data-sheet-theme="light" id="sheet-theme-light">
+              <span class="swatch-circle light"></span>
+              <div class="swatch-text">
+                <div class="swatch-name">Daylight</div>
+                <div class="swatch-sub">Clean White</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Page Turn Style (Paged vs Continuous Scroll) -->
+        <div class="sheet-section">
+          <div class="sheet-label-row">
+            <span class="sheet-label">Reading Mode</span>
+          </div>
+          <div class="segmented-control">
+            <button class="segment-btn active" id="sheet-mode-paged">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              <span>Paged Turn (Kindle)</span>
+            </button>
+            <button class="segment-btn" id="sheet-mode-scroll">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"></rect><line x1="12" y1="6" x2="12" y2="10"></line></svg>
+              <span>Continuous Scroll</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Audio Listen Aloud Bar in Sheet -->
+        <div class="sheet-section" style="border-bottom:none; margin-bottom:0; padding-bottom:0.25rem;">
+          <div class="sheet-label-row">
+            <span class="sheet-label">Audio Narration</span>
+          </div>
+          <div style="display:flex; gap:0.75rem; align-items:center;">
+            <button class="btn btn-secondary" id="sheet-tts-play" style="flex:1; justify-content:center; padding:0.65rem 1rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+              <span id="sheet-tts-label">Listen Aloud</span>
+            </button>
+            <button class="btn btn-secondary" id="sheet-tts-speed" style="padding:0.65rem 1rem; font-family:var(--font-mono); font-size:0.85rem; font-weight:600;">1.0x</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Popup Stack -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

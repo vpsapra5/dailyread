@@ -1,0 +1,50 @@
+{
+    "days":  {
+                 "2026-10-22":  {
+                                    "assignedAt":  "2026-10-21T02:01:34.5297972-04:00",
+                                    "bookId":  "crime-and-punishment",
+                                    "skipped":  [
+
+                                                ]
+                                },
+                 "2026-10-19":  {
+                                    "assignedAt":  "2026-10-18T21:45:07.3446896-04:00",
+                                    "bookId":  "crucial-conversations",
+                                    "skipped":  [
+
+                                                ]
+                                },
+                 "2026-10-18":  {
+                                    "assignedAt":  "2026-10-18T21:41:29.4898391-04:00",
+                                    "bookId":  "dune",
+                                    "skipped":  [
+
+                                                ]
+                                },
+                 "2026-10-21":  {
+                                    "assignedAt":  "2026-10-21T01:59:33.8344545-04:00",
+                                    "bookId":  "project-hail-mary",
+                                    "skipped":  [
+
+                                                ]
+                                },
+                 "2026-10-17":  {
+                                    "assignedAt":  "2026-10-17T21:05:50.2283405-04:00",
+                                    "bookId":  "atomic-habits",
+                                    "skipped":  [
+                                                    "never-let-me-go",
+                                                    "big-magic"
+                                                ]
+                                }
+             },
+    "queue":  [
+
+              ],
+    "finished":  {
+
+                 },
+    "progress":  {
+                     "atomic-habits":  1,
+                     "dune":  0
+                 }
+}

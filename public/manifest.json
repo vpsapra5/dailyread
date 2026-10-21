@@ -1,0 +1,22 @@
+{
+  "name": "DailyRead — 30-Minute Book Summaries",
+  "short_name": "DailyRead",
+  "description": "Read one high-impact 30-minute book summary every day from the world's greatest books.",
+  "start_url": "/#/today",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='42' fill='%23111827'/><path d='M96 32l18.5 37.5L156 75.6l-30 29.2 7.1 41.3L96 126.6l-37.1 19.5 7.1-41.3-30-29.2 41.5-6.1z' fill='%23f59e0b'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='%23111827'/><path d='M256 85.3l49.4 100.1L416 201.7l-80 78 18.9 110.1L256 337.7l-98.9 52 18.9-110.1-80-78 110.6-16.3z' fill='%23f59e0b'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

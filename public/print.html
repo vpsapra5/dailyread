@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DailyRead — Book Summary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: letter portrait;
+      margin: 20mm 18mm 20mm 18mm;
+    }
+    body {
+      font-family: 'Literata', Georgia, serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      color: #111827;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 24pt;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 4pt;
+      color: #0b0f19;
+      page-break-after: avoid;
+    }
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 15pt;
+      font-weight: 700;
+      margin-top: 18pt;
+      margin-bottom: 6pt;
+      padding-bottom: 3pt;
+      border-bottom: 1.5pt solid #e5e7eb;
+      color: #1f2937;
+      page-break-after: avoid;
+    }
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 12pt;
+      font-weight: 600;
+      margin-top: 12pt;
+      margin-bottom: 4pt;
+      color: #374151;
+      page-break-after: avoid;
+    }
+    p {
+      margin-bottom: 8pt;
+    }
+    blockquote {
+      border-left: 3pt solid #d97706;
+      background: #fef3c7;
+      padding: 8pt 12pt;
+      margin: 10pt 0;
+      font-style: italic;
+    }
+    details summary {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      color: #b45309;
+      margin-bottom: 4pt;
+    }
+    ul, ol {
+      padding-left: 18pt;
+      margin-bottom: 8pt;
+    }
+    li {
+      margin-bottom: 3pt;
+    }
+    .header-rule {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2pt solid #0b0f19;
+      padding-bottom: 6pt;
+      margin-bottom: 16pt;
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-rule">
+    <span>DailyRead · 30-Minute Daily Masterclass</span>
+    <span id="print-date"></span>
+  </div>
+  <div id="print-content">Loading book summary for print...</div>
+
+  <script>
+    (async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookId = urlParams.get('id');
+      document.getElementById('print-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      if (!bookId) {
+        document.getElementById('print-content').textContent = 'No book specified.';
+        return;
+      }
+      try {
+        const res = await fetch(`/api/summary/${bookId}`);
+        const data = await res.json();
+        if (data && data.markdown) {
+          // Minimal markdown converter
+          let html = '';
+          const lines = data.markdown.split(/\r?\n/);
+          for (let l of lines) {
+            if (l.startsWith('# ')) html += `<h1>${l.substring(2)}</h1>`;
+            else if (l.startsWith('## ')) html += `<h2>${l.substring(3)}</h2>`;
+            else if (l.startsWith('### ')) html += `<h3>${l.substring(4)}</h3>`;
+            else if (l.startsWith('> ')) html += `<blockquote>${l.substring(2)}</blockquote>`;
+            else if (l.match(/^\s*-\s+/)) html += `<li>${l.replace(/^\s*-\s+/, '')}</li>`;
+            else if (l.trim()) html += `<p>${l}</p>`;
+          }
+          document.getElementById('print-content').innerHTML = html;
+        }
+      } catch (e) {
+        document.getElementById('print-content').textContent = 'Error loading summary.';
+      }
+    })();
+  </script>
+</body>
+</html>
