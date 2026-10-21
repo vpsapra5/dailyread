@@ -68,11 +68,16 @@
         headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
         ...options
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: res.statusText }));
-        throw new Error(err.error || `HTTP ${res.status}`);
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        throw new Error(`Unexpected non-JSON response from server`);
       }
-      return await res.json();
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || `HTTP ${res.status}`);
+      }
+      return data;
     } catch (err) {
       console.error(`API Error on ${path}:`, err);
       showToast(err.message, 'error');
