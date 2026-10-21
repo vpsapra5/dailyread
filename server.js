@@ -96,7 +96,7 @@ function getDefaultSettings() {
     wpm: 230,
     weights: {},
     browserNotify: false,
-    model: 'gemini-3.5-flash',
+    model: 'gemini-3.8-flash',
     email: {
       enabled: true,
       targetEmail: 'vpsapra5@gmail.com',
@@ -311,19 +311,22 @@ function getSummaryStatus(bookId) {
   };
 }
 
-// Multi-Model Gemini AI Generation with Auto-Fallback
+// Multi-Model Gemini AI Generation with Auto-Fallback (Primary: gemini-3.8-flash)
 const GEMINI_MODELS = [
+  'gemini-3.8-flash',
   'gemini-3.5-flash',
   'gemini-3.5-flash-lite',
   'gemini-3.1-flash-lite',
-  'gemini-flash-lite-latest',
-  'gemini-3.8-flash'
+  'gemini-flash-lite-latest'
 ];
 
 async function generateSummary(bookId) {
   const book = getBookById(bookId);
   const apiKey = process.env.GEMINI_API_KEY || (readJson(ENV_PATH, {}).GEMINI_API_KEY);
   if (!apiKey) throw new Error('No GEMINI_API_KEY set. Please configure GEMINI_API_KEY in your environment variables.');
+
+  const preferredModel = process.env.GEMINI_MODEL || getSettings().model || 'gemini-3.8-flash';
+  const modelList = [preferredModel, ...GEMINI_MODELS.filter(m => m !== preferredModel)];
 
   const prompt = `You are a world-class literary analyst and intellectual speed-reader. 
 Create an exhaustive, highly structured, practical 30-minute book summary for:
@@ -352,7 +355,7 @@ Structure your summary in pristine Markdown with:
 `;
 
   let lastError = null;
-  for (const model of GEMINI_MODELS) {
+  for (const model of modelList) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const payload = JSON.stringify({
