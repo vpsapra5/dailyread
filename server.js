@@ -355,31 +355,55 @@ Structure your summary in pristine Markdown with:
 `;
 
   let lastError = null;
+  const thinkingBudget = Number(process.env.GEMINI_THINKING_BUDGET) || 8192;
+
   for (const model of modelList) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const payload = JSON.stringify({
+      const payload = {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 16000
+          maxOutputTokens: 16000,
+          thinkingConfig: {
+            thinkingBudget: thinkingBudget
+          }
         }
-      });
+      };
 
-      const res = await fetch(url, {
+      let res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: payload
+        body: JSON.stringify(payload)
       });
 
+      // If thinkingConfig is not supported by a specific model, retry without it
       if (!res.ok) {
         const errText = await res.text();
-        lastError = new Error(`Gemini ${model} error (${res.status}): ${errText}`);
-        continue;
+        if (errText.includes('thinkingConfig') || errText.includes('thinkingBudget')) {
+          delete payload.generationConfig.thinkingConfig;
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+        if (!res.ok) {
+          lastError = new Error(`Gemini ${model} error (${res.status}): ${errText}`);
+          continue;
+        }
       }
 
       const json = await res.json();
-      const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+      let text = '';
+      if (json?.candidates?.[0]?.content?.parts) {
+        for (const part of json.candidates[0].content.parts) {
+          if (!part.thought && part.text) {
+            text += part.text;
+          }
+        }
+      }
+
       if (text && text.trim().length > 100) {
         const cleanText = text.replace(/^```(?:markdown|md)?\s*/i, '').replace(/\s*```$/i, '').trim();
         const mdPath = path.join(SUMMARIES_DIR, `${bookId}.md`);
@@ -388,11 +412,11 @@ Structure your summary in pristine Markdown with:
         
         try {
           fs.writeFileSync(mdPath, cleanText, 'utf-8');
-          fs.writeFileSync(jsonPath, JSON.stringify({ minutes: 30, generatedAt: new Date().toISOString(), model, words }, null, 2), 'utf-8');
+          fs.writeFileSync(jsonPath, JSON.stringify({ minutes: 30, generatedAt: new Date().toISOString(), model, thinking: 'high', words }, null, 2), 'utf-8');
         } catch (e) {
           try {
             fs.writeFileSync(path.join('/tmp', `${bookId}.md`), cleanText, 'utf-8');
-            fs.writeFileSync(path.join('/tmp', `${bookId}.json`), JSON.stringify({ minutes: 30, generatedAt: new Date().toISOString(), model, words }, null, 2), 'utf-8');
+            fs.writeFileSync(path.join('/tmp', `${bookId}.json`), JSON.stringify({ minutes: 30, generatedAt: new Date().toISOString(), model, thinking: 'high', words }, null, 2), 'utf-8');
           } catch (e2) { }
         }
         return cleanText;
