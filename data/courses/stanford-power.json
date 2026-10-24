@@ -1,0 +1,672 @@
+{
+  "id": "stanford-power",
+  "title": "So You Think You Can Rule the World?",
+  "institution": "Stanford University Seminar",
+  "department": "Political Economy, Game Theory & Venture Strategy",
+  "code": "STANFORD-PWR-101",
+  "instructor": "Stanford Political Economy & Venture Group",
+  "badge": "Stanford Executive Seminar",
+  "tagline": "An Intensive Seminar in Power, Game Theory, Multipolar Traps, and Institutional Dominance",
+  "description": "An elite curriculum dissecting the hidden game-theoretic laws governing geopolitics, Silicon Valley monopolies, corporate boardrooms, and institutional decay. Based on Stanford's infamous high-stakes power seminar and counterbalanced by Theo Baker's investigative critique.",
+  "duration": "6 Interactive Modules • ~3 Hours",
+  "level": "Advanced Strategic Theory",
+  "icon": "🏛️",
+  "accentColor": "#e11d48",
+  "bannerGradient": "linear-gradient(135deg, #8c1515 0%, #4c0519 50%, #1e1b4b 100%)",
+  "prerequisites": "Foundations in microeconomics, game theory intuition, and organizational politics.",
+  "syllabusTakeaway": "Master the structural forces of coordination failures, competitive moats, coalition survival, and moral counterweights in modern systems of power.",
+  "modules": [
+    {
+      "id": "module-1",
+      "number": 1,
+      "topic": "Multipolar Traps",
+      "title": "Multipolar Traps & The God of Coordination Failure",
+      "primaryText": "\"Meditations on Moloch\" by Scott Alexander (Slate Star Codex)",
+      "author": "Scott Alexander",
+      "keyTakeaway": "How hyper-competition forces rational agents to sacrifice every human value for a slight competitive edge.",
+      "icon": "👹",
+      "readingMinutes": 25,
+      "summary": "In a multipolar trap, every participant acts with strict local rationality, yet the aggregate outcome is catastrophic for all. Scott Alexander personifies this trap as Moloch: the demon god of coordination failure.",
+      "lecture": {
+        "intro": "Why do nations build nuclear arsenals capable of destroying the planet ten times over? Why do elite students spend 90 hours a week doing work they hate to out-compete their peers? Why do AI labs race to deploy unverified foundation models? The answer is not malice or stupidity. It is Moloch.",
+        "sections": [
+          {
+            "heading": "1. The Anatomy of a Multipolar Trap",
+            "content": "A multipolar trap occurs when multiple competing actors operate in an environment without a trustworthy overarching coordinator. Each actor faces a payoff matrix where defection (abandoning voluntary restraint to gain a competitive edge) strictly dominates cooperation. If everyone restrains themselves, the world is humane. But if even one actor defects, any competitor who refuses to defect is eliminated. Therefore, all actors defect, dragging the entire system into an equilibrium where immense resources are wasted merely to survive.",
+            "keyTerms": [
+              "Multipolar Trap",
+              "Dominant Strategy",
+              "Zero-Sum Competition",
+              "Suboptimal Nash Equilibrium"
+            ]
+          },
+          {
+            "heading": "2. The Allegory of Moloch",
+            "content": "Drawing on Allen Ginsberg’s poem 'Howl', Scott Alexander uses Moloch as an allegory for systems where optimization for a single competitive metric destroys everything else humans value. Consider cosmetic surgery: if no one gets it, everyone looks normal. If one person gets it, they gain a mating advantage. Soon, everyone must spend thousands of dollars undergoing painful surgery simply to maintain baseline competitiveness. Society spends billions, no one is happier on average, yet nobody can unilaterally stop.",
+            "caseStudy": "The Commercial Fishing Dilemma: When multiple fishing trawlers compete in an open sea, the captain who upgrades to sonic sonar sweeps the fish faster. Every other captain must buy sonic sonar or go bankrupt. Within five years, the fishery collapses. Every fisherman spent their life savings to destroy their own livelihood."
+          },
+          {
+            "heading": "3. Silicon Valley & The AI Race",
+            "content": "In technology markets, multipolar traps govern startup speed. If Startup A spends 6 months verifying the safety, alignment, and societal impact of their autonomous agent, while Startup B launches in 2 weeks and captures the venture capital round, Startup A ceases to exist. Rational executives at both companies will race to the bottom, acknowledging the systemic risk while correctly noting that unilateral disarmament equals suicide.",
+            "takeaway": "The only exit from a multipolar trap is credible, enforceable coordination: either through a benevolent sovereign (Leviathan), ironclad mutual pacts with transparent monitoring, or structural game-theoretic redesign."
+          }
+        ]
+      },
+      "crucible": {
+        "title": "The Frontier AI Deployment Dilemma",
+        "context": "You are the CEO of a frontier AI lab holding an advanced autonomous agent. Your alignment team identifies a 12% probability of critical safety vulnerabilities. However, intelligence leaks reveal your chief rival plans to launch their model in 14 days, which will lock in 80% of enterprise market contracts.",
+        "question": "What is your strategic directive to the executive board?",
+        "options": [
+          {
+            "id": "opt-a",
+            "title": "Unilateral Safety Halt",
+            "description": "Delay deployment by 6 months to achieve 99.9% safety verification, accepting market share wipeout.",
+            "consequence": "Your rival captures 82% of enterprise customers. Your venture investors pull funding and replace you with a growth-focused operator who deploys the unverified model anyway. Moloch wins: the risk remains in the world, and you lost your seat.",
+            "strategicScore": "Idealistic / Vulnerable"
+          },
+          {
+            "id": "opt-b",
+            "title": "Conditional Treaty Verification",
+            "description": "Approach rival board and federal regulators privately with verified red-team audit logs to enforce a synchronized mutual pause.",
+            "consequence": "By presenting undeniable third-party evidence to shared institutional stakeholders, you convert an unmonitored multipolar trap into a bilateral coordination game. You preserve your business while halting the race to the bottom.",
+            "strategicScore": "Master Strategist"
+          },
+          {
+            "id": "opt-c",
+            "title": "Full Defection Acceleration",
+            "description": "Ship immediately with marketing disclaimers to capture market dominance before your rival.",
+            "consequence": "You capture initial enterprise contracts, but an exploit triggers widespread customer infrastructure outages. You spend $400M on legal containment and regulatory backlash freezes the entire sector.",
+            "strategicScore": "Hyper-Reactive / Brittle"
+          }
+        ]
+      },
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "According to Scott Alexander in 'Meditations on Moloch', why do multipolar traps persist even when all participants despise the outcome?",
+          "options": [
+            "Because participants are irrational and lack economic education.",
+            "Because unilateral disarmament by any single participant guarantees their competitive destruction.",
+            "Because a secret cabal of central authorities dictates competitive mandates.",
+            "Because market systems naturally eliminate non-monopolistic actors."
+          ],
+          "correctIndex": 1,
+          "explanation": "In a multipolar trap, every participant is acting completely rationally according to their immediate self-interest. If you unilaterally slow down or disarm, a competitor takes your market share or territory, leaving you destroyed while the problem continues."
+        },
+        {
+          "id": "q2",
+          "question": "Which of the following represents a classic 'Moloch' trap in modern society?",
+          "options": [
+            "A software engineer contributing to an open-source library on weekends.",
+            "Two students studying together in a library to prepare for an exam.",
+            "Athletes using performance-enhancing drugs because they know their rivals will, leaving all athletes with damaged health for zero relative advantage.",
+            "A company investing in employee wellness programs to reduce healthcare costs."
+          ],
+          "correctIndex": 2,
+          "explanation": "Doping in competitive sports is the archetypal multipolar trap: if everyone dopes, the relative ranks remain identical, but all athletes suffer bodily harm and immense financial stress. Unilateral clean athletes are systematically weeded out."
+        },
+        {
+          "id": "q3",
+          "question": "What is the structural antidote required to escape a multipolar trap?",
+          "options": [
+            "Relying on moral appeals and personal goodwill of individual CEOs.",
+            "Encouraging more intense competition to let the free market resolve the imbalance.",
+            "Establishing enforceable coordination, verification mechanisms, or collective institutions that penalize defection.",
+            "Exiting the market entirely and becoming a non-profit entity."
+          ],
+          "correctIndex": 2,
+          "explanation": "Moral appeals fail in multipolar traps because the system selects against anyone who heeds them. The only durable escape is collective coordination: verifiable, binding rules with penalties for defectors."
+        }
+      ]
+    },
+    {
+      "id": "module-2",
+      "number": 2,
+      "topic": "Commons & Coordination",
+      "title": "The Tragedy of the Commons & Polycentric Governance",
+      "primaryText": "\"The Tragedy of the Commons\" by Garrett Hardin & Governing the Commons by Elinor Ostrom",
+      "author": "Garrett Hardin & Elinor Ostrom",
+      "keyTakeaway": "Why shared resources collapse under individual self-interest and how private or institutional rules enforce order.",
+      "icon": "🌊",
+      "readingMinutes": 25,
+      "summary": "Garrett Hardin argued that shared resources inevitably face ruin without private property or centralized state tyranny. Elinor Ostrom earned the Nobel Prize by proving communities can manage common pool resources through polycentric rules and graduated sanctions.",
+      "lecture": {
+        "intro": "From the Earth's climate and ocean fish stocks to open-source software libraries and company culture, the commons are everywhere. How do human societies extract value from shared assets without exhausting them?",
+        "sections": [
+          {
+            "heading": "1. Hardin's Dilemma: The Pasture of Ruin",
+            "content": "In 1968, Garrett Hardin described a pasture open to all herdsmen. Each herdsman calculates that adding one more cow yields a personal utility of +1, while the fractional cost of overgrazing is distributed among all herdsmen (-1/N). Because the individual gain exceeds the personal cost, every rational herdsman adds more cows until the pasture is barren.",
+            "keyTerms": [
+              "Common-Pool Resource",
+              "Rivalrous Good",
+              "Non-Excludable",
+              "Free-Rider Problem"
+            ]
+          },
+          {
+            "heading": "2. Hardin's False Binary",
+            "content": "Hardin famously concluded that mankind faces only two choices: privatization (fencing the land and turning cows into private capital) or centralized Leviathan coercion (a heavy-handed state authority). For decades, orthodox economists accepted this binary, assuming local self-governance was an impossible dream.",
+            "caseStudy": "The Aral Sea vs Maine Lobster Fisheries: While the Soviet state Leviathan dried up the Aral Sea through central planning, generations of Maine lobstermen successfully maintained rich lobster harvests without state quotas by organizing local harbor gangs that policed territorial fishing rights."
+          },
+          {
+            "heading": "3. Ostrom’s 8 Design Principles for Polycentric Order",
+            "content": "Elinor Ostrom spent decades studying actual water basins, pastures, and forests across Switzerland, Japan, and the Philippines. She discovered that sustainable commons share 8 core institutional design principles:",
+            "bulletPoints": [
+              "Clearly defined boundaries (who can take what and when).",
+              "Congruence between appropriation rules and local conditions.",
+              "Collective-choice arrangements where affected users participate in modifying rules.",
+              "Active monitoring by accountable community members.",
+              "Graduated sanctions for violators (starting with warnings, escalating to expulsion).",
+              "Rapid, low-cost conflict resolution mechanisms.",
+              "Minimal recognition of rights by external government authorities.",
+              "Nested enterprises for large-scale systems (polycentric layers)."
+            ]
+          }
+        ]
+      },
+      "crucible": {
+        "title": "The Startup Shared Compute Cluster Crisis",
+        "context": "Your technology company operates a shared cluster of 512 high-end H100 GPUs for 8 research teams. Recently, Team Alpha started running low-priority background experiments 24/7, maxing out memory and crashing critical production models for Team Beta and Team Gamma.",
+        "question": "How do you restructure access to the compute commons?",
+        "options": [
+          {
+            "id": "opt-a",
+            "title": "Executive Leviathan Mandate",
+            "description": "Implement top-down VP approval for every single training job run longer than 2 hours.",
+            "consequence": "Bureaucracy strangles velocity. Top research engineers quit because waiting 4 days for job approval kills experimental iteration.",
+            "strategicScore": "Bureaucratic Paralysis"
+          },
+          {
+            "id": "opt-b",
+            "title": "Ostrom Polycentric Quota & Peer Monitoring",
+            "description": "Establish transparent weekly compute credits, a public usage dashboard, and a peer-led allocation committee that reallocates idle compute.",
+            "consequence": "Teams negotiate compute swaps peer-to-peer. When Team Alpha exceeds quota, they are publicly accountable and assigned low-priority preemptible queues. Cluster efficiency jumps 43%.",
+            "strategicScore": "Nobel-Caliber Institutional Design"
+          },
+          {
+            "id": "opt-c",
+            "title": "Free Market Auction Billing",
+            "description": "Charge internal budget dollars per GPU-hour, allowing the wealthiest project to monopolize the cluster.",
+            "consequence": "Cash-rich legacy maintenance teams buy all GPUs while underfunded moonshot R&D is starved of compute, terminating future innovation.",
+            "strategicScore": "Short-Sighted Commercialization"
+          }
+        ]
+      },
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "What distinction separates a Common-Pool Resource (CPR) like groundwater from a Pure Public Good like national defense?",
+          "options": [
+            "CPRs are non-rivalrous, while public goods are rivalrous.",
+            "CPRs are rivalrous in consumption (my use subtracts from yours), but non-excludable (difficult to keep people out).",
+            "CPRs can only be owned by sovereign nation-states.",
+            "Public goods always collapse under free-rider dynamics, while CPRs never do."
+          ],
+          "correctIndex": 1,
+          "explanation": "Common-Pool Resources are subtractable (rivalrous): every gallon of water or fish taken reduces the remaining pool for others, yet erecting physical fences to exclude users is extremely difficult."
+        },
+        {
+          "id": "q2",
+          "question": "What was Elinor Ostrom's core objection to Garrett Hardin's 'Tragedy of the Commons' model?",
+          "options": [
+            "Hardin forgot to include government subsidies in his mathematical model.",
+            "Hardin assumed human beings are trapped in isolated, non-communicative one-shot games unable to create rules and build social trust.",
+            "Hardin’s model was only applicable to agricultural societies and has zero relevance to modern industry.",
+            "Ostrom proved that private property is always the best solution to all resource problems."
+          ],
+          "correctIndex": 1,
+          "explanation": "Hardin assumed human actors are helpless prisoners incapable of talking, establishing social norms, monitoring peers, or modifying rules. Ostrom showed real communities regularly craft resilient governance systems without state coercion."
+        },
+        {
+          "id": "q3",
+          "question": "Why are 'graduated sanctions' a critical principle in Ostrom's successful commons governance?",
+          "options": [
+            "Immediate severe penalties destroy community trust and encourage violators to hide their infractions, whereas graduated penalties correct minor errors while deterring chronic offenders.",
+            "Graduated sanctions allow wealthy participants to buy immunity.",
+            "They eliminate the need for any monitoring systems.",
+            "They guarantee that first-time rule breakers are instantly exiled."
+          ],
+          "correctIndex": 0,
+          "explanation": "Starting with mild peer warnings and escalating to harsher penalties preserves social cohesion, distinguishes between accidental missteps and predatory defection, and keeps members committed to the collective framework."
+        }
+      ]
+    },
+    {
+      "id": "module-3",
+      "number": 3,
+      "topic": "Strategic Cooperation",
+      "title": "The Evolution of Cooperation & Iterated Games",
+      "primaryText": "The Evolution of Cooperation by Robert Axelrod",
+      "author": "Robert Axelrod",
+      "keyTakeaway": "How iterated Prisoner's Dilemmas work in the real world, and when \"Tit-for-Tat\" or defection wins.",
+      "icon": "🤝",
+      "readingMinutes": 25,
+      "summary": "In a single game, betrayal is the only logical choice. But when games repeat indefinitely under the shadow of the future, cooperative strategies conquer defection. Robert Axelrod’s famous computer tournaments revealed the mathematical rules of lasting cooperation.",
+      "lecture": {
+        "intro": "If raw power and self-interest dictate human behavior, why does trust exist at all? Political scientist Robert Axelrod organized a worldwide computer tournament pitting game-theoretic strategies against one another in an iterated Prisoner's Dilemma. The simplest program won.",
+        "sections": [
+          {
+            "heading": "1. The Shadow of the Future ($w$)",
+            "content": "In a one-shot Prisoner's Dilemma, defection is the dominant strategy regardless of what your opponent does. But when players know they will interact again tomorrow, and the probability of future interaction ($w$, the discount factor) is sufficiently high, the long-term payoff of mutual cooperation outweighs the short-term prize of betrayal.",
+            "keyTerms": [
+              "Iterated Prisoner's Dilemma",
+              "Discount Factor",
+              "Shadow of the Future",
+              "Tit-for-Tat",
+              "Evolutionary Stable Strategy"
+            ]
+          },
+          {
+            "heading": "2. The Anatol Rapoport Breakthrough: Tit-for-Tat",
+            "content": "Among hundreds of complex AI algorithms—probabilistic exploiters, grudge-holders, randomizers—the winning entry was submitted by Anatol Rapoport in four lines of code: Tit-for-Tat. Its rules: Start by cooperating on move 1; thereafter, simply replicate what your opponent did on the preceding move.",
+            "caseStudy": "The Western Front Trench Warfare (1914-1918): In World War I, enemy troops facing each other in static trenches for months developed a spontaneous 'Live and Let Live' system. German and British soldiers deliberately aimed artillery over each other's heads during breakfast and bad weather. When one side breached the peace, the other retaliated with identical ferocity, and then resumed mutual restraint."
+          },
+          {
+            "heading": "3. The 4 Golden Rules of Winning Strategies",
+            "content": "Axelrod’s deep analysis revealed that top-performing strategies in repeated conflict universally share four distinct properties:",
+            "bulletPoints": [
+              "1. Be Nice: Never be the first to defect. Establish cooperative goodwill from the opening move.",
+              "2. Be Retaliatory (Provocable): The moment your opponent defects, immediately punish them. Do not absorb betrayal passively.",
+              "3. Be Forgiving: Once your opponent returns to cooperation, forgive instantly. Do not harbor multi-round vendettas.",
+              "4. Be Clear & Predictable: Do not be overly clever or tricky. Let your opponent know exactly what rule governs your responses."
+            ]
+          }
+        ]
+      },
+      "crucible": {
+        "title": "The B2B SaaS Price War Dilemma",
+        "context": "You and a formidable legacy competitor dominate enterprise CRM. For two years, both firms charged premium margins ($150/seat). Yesterday, your competitor launched an aggressive 40% discount targeting your top 20 accounts.",
+        "question": "How do you respond using Axelrod's strategic cooperation principles?",
+        "options": [
+          {
+            "id": "opt-a",
+            "title": "Passive Tolerance",
+            "description": "Do nothing to avoid escalating into a full price war, hoping they will stop after capturing a few accounts.",
+            "consequence": "Your competitor perceives weakness. They expand discounts across all your tier-1 accounts, permanently eroding your market valuation.",
+            "strategicScore": "Exploited Sucker"
+          },
+          {
+            "id": "opt-b",
+            "title": "Proportional Immediate Retaliation with Clear Peace Terms",
+            "description": "Instantly match discounts specifically on their vulnerable flagship clients, while simultaneously signaling through executive channels that normal pricing resumes the day they end their campaign.",
+            "consequence": "You embody 'Retaliatory + Forgiving + Clear'. Your competitor feels immediate pain, realizes price wars produce mutual destruction, and withdraws discounts. High margin equilibrium is restored.",
+            "strategicScore": "Master Tit-for-Tat Execution"
+          },
+          {
+            "id": "opt-c",
+            "title": "Total Scorched-Earth Price War",
+            "description": "Slash your prices across all products by 80% to bankrupt them over the next 3 years.",
+            "consequence": "Both companies burn their cash reserves. Operating margins collapse from 40% to -15%, paving the way for an external private equity buyout that fires both executive teams.",
+            "strategicScore": "Spiteful Pyrrhic Collapse"
+          }
+        ]
+      },
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "What does Robert Axelrod mean by 'the shadow of the future' in strategic cooperation?",
+          "options": [
+            "The psychological fear of historical retribution after retirement.",
+            "The degree to which players value future payoff iterations compared to immediate short-term gains.",
+            "The inevitable rise of artificial intelligence in business negotiation.",
+            "The threat of state military intervention in market disputes."
+          ],
+          "correctIndex": 1,
+          "explanation": "The shadow of the future measures the likelihood and importance of ongoing interactions. When actors know they must deal with each other repeatedly, the value of long-term cooperation dwarfs the one-off windfall of defection."
+        },
+        {
+          "id": "q2",
+          "question": "Why did 'Tit-for-Tat' consistently defeat complex predatory strategies in Axelrod's tournaments?",
+          "options": [
+            "Because it was the most ruthless and never forgave an opponent.",
+            "Because it was 'nice' (never initiated defection), 'provocable' (punished betrayal immediately), 'forgiving' (returned to cooperation without spite), and 'clear' (predictable to opponents).",
+            "Because it used random noise to confuse rival algorithms.",
+            "Because it had access to more processing power than competing programs."
+          ],
+          "correctIndex": 1,
+          "explanation": "Tit-for-Tat succeeded because its simplicity and clarity allowed opponents to realize that cooperating with it was profitable, while attempting to exploit it was swiftly and reliably punished."
+        },
+        {
+          "id": "q3",
+          "question": "Under what specific condition can a small cluster of Tit-for-Tat cooperative agents invade and transform a population dominated by 'Always Defect' exploiters?",
+          "options": [
+            "Only if government regulators subsidize the cooperative agents.",
+            "If the cooperative agents have even a tiny fraction of their interactions with each other, allowing mutual cooperation to outperform isolated exploiters.",
+            "Only if exploiters are physically removed from the system.",
+            "Cooperators can never invade an exploiter population under any circumstances."
+          ],
+          "correctIndex": 1,
+          "explanation": "Axelrod proved mathematically that even a 5% cluster of cooperators who occasionally interact with each other will thrive because their mutual cooperative gains generate higher average payoffs than the zero-sum crumbs left to mutual defectors."
+        }
+      ]
+    },
+    {
+      "id": "module-4",
+      "number": 4,
+      "topic": "Monopoly & Leverage",
+      "title": "Zero to One: Escaping the Competition Trap",
+      "primaryText": "Zero to One by Peter Thiel (Stanford CS183)",
+      "author": "Peter Thiel",
+      "keyTakeaway": "Why competition destroys profits and how founders build monopolies to escape multipolar traps.",
+      "icon": "♟️",
+      "readingMinutes": 25,
+      "summary": "In conventional business theory, competition is celebrated as the pinnacle of healthy capitalism. Peter Thiel argues the exact opposite: competition is a destructive trap that erodes profit margins to zero. The true goal of a founder is to build a durable, creative monopoly.",
+      "lecture": {
+        "intro": "In 2012, Peter Thiel taught CS183: Startup at Stanford University. His opening premise stunned the campus: 'If you want to create and capture lasting value, look to build a monopoly.'",
+        "sections": [
+          {
+            "heading": "1. The Lie We Tell Ourselves",
+            "content": "Under perfect competition, no firm makes economic profit. In an airline industry competing over identical commodity seats, airlines generate hundreds of billions in revenue but make less than 0.5% profit margins. Meanwhile, Google has a virtual monopoly on search and captures profit margins exceeding 30%. Capitalism and perfect competition are opposites: capitalism requires the accumulation of capital, which competition destroys.",
+            "keyTerms": [
+              "Creative Monopoly",
+              "Power Law",
+              "Definite Optimism",
+              "10x Advantage",
+              "Network Effects"
+            ]
+          },
+          {
+            "heading": "2. The 4 Pillars of a Durable Monopoly",
+            "content": "A creative monopoly does not mean an artificial cartel backed by corrupt state licenses. It means a business so radically superior at what it does that no other firm can offer a close substitute. Thiel outlines four core characteristics:",
+            "bulletPoints": [
+              "Proprietary Technology: Must be at least 10x better than the closest substitute in some important dimension (e.g., Google search speed, Amazon 1-click & logistics).",
+              "Network Effects: The product becomes exponentially more valuable as more people use it (e.g., eBay, WhatsApp, payment networks).",
+              "Economies of Scale: Fixed costs are amortized over massive volume; software has near-zero marginal cost.",
+              "Branding: Powerful identity and design (e.g., Apple hardware), which reinforces defensibility but must rest upon substantive proprietary tech."
+            ]
+          },
+          {
+            "heading": "3. Start Small and Monopolize",
+            "content": "The biggest mistake entrepreneurs make is targeting 1% of a giant $100 billion market. A huge market means intense competition, crushing marketing costs, and swift failure. Instead, start with an absurdly small, focused market—like PayPal dominating eBay PowerSellers, or Facebook monopolizing Harvard undergraduates—capture 80% market share immediately, and scale into adjacent concentric circles.",
+            "takeaway": "The contrarian question: 'What important truth do very few people agree with you on?' Finding secrets hidden from conventional consensus is the only way to build non-commodity leverage."
+          }
+        ]
+      },
+      "crucible": {
+        "title": "The Product Strategic Positioning Crossroads",
+        "context": "You are pitching your deep-tech enterprise software startup. Your engineering team developed a revolutionary GPU compiler. You must decide your initial target go-to-market wedge.",
+        "question": "Which market entry strategy do you choose?",
+        "options": [
+          {
+            "id": "opt-a",
+            "title": "The Giant Market Mirage",
+            "description": "Target the global $250B enterprise cloud infrastructure market, claiming: 'If we get just 0.5% of cloud spend, we are a unicorn.'",
+            "consequence": "You enter a bloodbath against AWS, Microsoft Azure, and 40 venture-backed competitors. Sales cycles are 18 months, customer acquisition costs explode, and you bleed dry before closing 5 accounts.",
+            "strategicScore": "Commodity Suicide"
+          },
+          {
+            "id": "opt-b",
+            "title": "The Concentrated Niche Monopoly",
+            "description": "Target exclusively the 150 quantitative hedge funds running high-frequency LLM backtests, providing a 12x latency improvement.",
+            "consequence": "You capture 70% of high-frequency trading firms within 9 months. With zero sales resistance and 85% gross margins, you achieve profitability, lock in high switching costs, and expand to pharmaceutical simulation next.",
+            "strategicScore": "Thielian Zero-to-One Mastery"
+          },
+          {
+            "id": "opt-c",
+            "title": "Open-Source Free-For-All",
+            "description": "Make the compiler 100% free open-source with no proprietary enterprise moat, hoping to sell consulting later.",
+            "consequence": "Major cloud providers package your open-source binary as a hosted managed service, monetizing millions while your startup makes zero revenue.",
+            "strategicScore": "Extracted by Giants"
+          }
+        ]
+      },
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "According to Peter Thiel in 'Zero to One', why do competitive firms lie and claim they are unique monopolies, while actual monopolies lie and claim they operate in hyper-competitive markets?",
+          "options": [
+            "To evade income taxes in offshore jurisdictions.",
+            "Non-monopolies narrow their market definition to look dominant ('we are the only British pub on 4th Street'), while real monopolies widen their market definition to avoid antitrust scrutiny ('we only hold 0.1% of global advertising').",
+            "Because market research analysts require standardized reporting metrics.",
+            "Because both groups are confused about their core demographic."
+          ],
+          "correctIndex": 1,
+          "explanation": "Thiel highlights that businesses constantly distort reality: struggling competitive firms pretend to be unique to attract venture funding, while massive monopolies like Google pretend they are tiny players in a vast global media pool to ward off federal regulators."
+        },
+        {
+          "id": "q2",
+          "question": "What is Thiel's rule of thumb regarding the minimum threshold for proprietary technology to create a true monopolistic moat?",
+          "options": [
+            "It must be 10% cheaper to produce than the market average.",
+            "It must be at least 10 times better than the second-best substitute in a critical dimension.",
+            "It must have at least five active patents registered in Delaware.",
+            "It must be completely open-source to maximize user trust."
+          ],
+          "correctIndex": 1,
+          "explanation": "An incremental 20% or 30% improvement is easily swamped by switching costs, brand loyalty, and sales friction. Only an order-of-magnitude (10x) leap offers transparent, undeniable superiority that forces users to switch."
+        },
+        {
+          "id": "q3",
+          "question": "How does the 'Power Law' govern venture capital portfolios and strategic investments?",
+          "options": [
+            "Returns are distributed normally along a standard bell curve, where most investments yield average returns.",
+            "A small handful of outlier investments generate more return than all other investments combined, making diversification into mediocre deals a mistake.",
+            "Power laws only apply to hardware companies with heavy capital equipment.",
+            "Every startup in a portfolio has an equal expected monetary value."
+          ],
+          "correctIndex": 1,
+          "explanation": "In venture capital, returns do not follow a bell curve; they follow a power law (Pareto distribution). The best single company in a successful fund typically returns more capital than the entire rest of the portfolio combined."
+        }
+      ]
+    },
+    {
+      "id": "module-5",
+      "number": 5,
+      "topic": "Realpolitik of Power",
+      "title": "Selectorate Theory & The Rules of Ruling",
+      "primaryText": "The Dictator's Handbook: Why Bad Behavior is Almost Always Good Politics by Bruce Bueno de Mesquita & Alastair Smith",
+      "author": "Bruce Bueno de Mesquita & Alastair Smith",
+      "keyTakeaway": "Selectorate theory: why leaders and CEOs act the way they do based purely on keeping their \"winning coalition\" paid.",
+      "icon": "👑",
+      "readingMinutes": 25,
+      "summary": "Benevolent rulers starve, while selfish dictators die peacefully in bed. Why? Selectorate theory reveals the mathematical logic of governance across dictatorships, democracies, and corporate boardrooms: power is solely about paying the essential few who keep you in office.",
+      "lecture": {
+        "intro": "Why do despots spend billions on luxury palaces while their citizens lack clean water? Why do democratic presidents pass convoluted corporate bailouts? The answer is not personality or ethics; it is the mathematical iron law of Selectorate Theory.",
+        "sections": [
+          {
+            "heading": "1. The Three Groups of Politics",
+            "content": "Every governance system—from a sovereign dictatorship to Apple's board of directors or a university department—is divided into three distinct groups:",
+            "bulletPoints": [
+              "The Interchangeables (Nominal Selectorate, $N$): Everyone with nominal voting rights (e.g., all voting citizens in a nation, or all retail shareholders).",
+              "The Influentials (Real Selectorate, $S$): Those who actually pick the leadership (e.g., party insiders, institutional fund managers, senior generals).",
+              "The Essentials (Winning Coalition, $W$): The vital inner circle whose direct support is required for the leader to survive in office tomorrow (e.g., the top 12 generals and security chiefs, or the key 4 board directors)."
+            ],
+            "keyTerms": [
+              "Selectorate Theory",
+              "Winning Coalition ($W$)",
+              "Nominal Selectorate ($N$)",
+              "Private Goods vs Public Goods",
+              "Resource Curse"
+            ]
+          },
+          {
+            "heading": "2. The 5 Golden Rules of Rule",
+            "content": "To gain and maintain absolute power, every leader must obey five non-negotiable rules:",
+            "bulletPoints": [
+              "Rule 1: Keep your winning coalition ($W$) as small as possible. The fewer people you have to pay off, the cheaper it is to maintain power.",
+              "Rule 2: Keep your nominal selectorate ($N$) as large as possible. A massive supply of potential replacements keeps the current coalition terrified of being dropped.",
+              "Rule 3: Control the flow of revenue. Control the treasury, state contracts, and resource rents personally.",
+              "Rule 4: Pay your essentials just enough to keep them loyal. If you underpay them, rivals will buy them; if you overpay them, they can buy their own coalition to overthrow you.",
+              "Rule 5: Don't take money out of your coalition's pockets to make the people's lives better. Benevolence that starves your core supporters triggers an immediate coup."
+            ]
+          },
+          {
+            "heading": "3. Corporate Boardrooms & The Resource Curse",
+            "content": "In democracies and public companies with large coalitions ($W$), leaders cannot afford private payouts to millions of voters, so they provide broad public goods (roads, schools, stock price dividends). In autocracies with small coalitions, private kickbacks are mathematically cheaper. Oil and natural resources worsen this: when state revenue comes from mineral pumps rather than citizen taxes, leaders have zero incentive to educate, protect, or listen to the populace.",
+            "takeaway": "The 'goodness' of a leader is an optical illusion created by the size of their winning coalition. To improve governance, expand the coalition."
+          }
+        ]
+      },
+      "crucible": {
+        "title": "The Corporate Takeover & Boardroom Coalition Dilemma",
+        "context": "You were appointed CEO of a struggling multinational industrial conglomerate. The company needs massive capital reinvestment in safety and R&D. However, your 7-member board of directors includes 3 predatory activist hedge fund managers holding the decisive votes on your contract renewal next month.",
+        "question": "How do you allocate the remaining $800M annual free cash flow?",
+        "options": [
+          {
+            "id": "opt-a",
+            "title": "Pure Public Good Reinvestment",
+            "description": "Spend 100% of the $800M upgrading factory worker safety, green energy upgrades, and employee severance funds.",
+            "consequence": "Factory workers praise you, but the 3 activist board members orchestrate an emergency vote within 3 weeks. You are fired, replaced by a ruthless private equity liquidator who cuts jobs and scraps safety entirely.",
+            "strategicScore": "Martyrdom Failure"
+          },
+          {
+            "id": "opt-b",
+            "title": "Calculated Coalition Preservation & Strategic Staging",
+            "description": "Allocate $450M to a targeted share buyback that satisfies the activist board directors' short-term yield requirements, while locking in the remaining $350M for mission-critical production modernization.",
+            "consequence": "You satisfy Rule 4: paying your essentials just enough to retain their votes, securing a 4-year contract extension that buys the runway needed to complete structural modernization.",
+            "strategicScore": "Realpolitik Survival Mastery"
+          },
+          {
+            "id": "opt-c",
+            "title": "Total Extortion & Personal Golden Parachute",
+            "description": "Bribe the board chairman with consulting perks and inflate your personal stock options before resigning.",
+            "consequence": "Short-term wealth secured, but federal securities investigations trigger lawsuits and destroy your professional reputation.",
+            "strategicScore": "Corrupt & Vulnerable"
+          }
+        ]
+      },
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "According to Selectorate Theory, what is the single most critical group a political leader or corporate CEO must satisfy to remain in power?",
+          "options": [
+            "The general public / average consumer.",
+            "The Winning Coalition ($W$): the small circle of essential people whose active loyalty prevents removal.",
+            "Independent journalistic oversight committees.",
+            "Historical legacy biographers."
+          ],
+          "correctIndex": 1,
+          "explanation": "If a leader fails to keep their winning coalition paid and satisfied, members of that coalition will defect to a challenger who offers a higher payoff, resulting in an immediate coup, vote of no confidence, or boardroom dismissal."
+        },
+        {
+          "id": "q2",
+          "question": "Why do resource-rich nations (e.g., nations with vast oil reserves) frequently suffer from brutal autocracy and poor public infrastructure ('The Resource Curse')?",
+          "options": [
+            "Because oil workers refuse to pay income taxes.",
+            "Because leaders can finance their small winning coalition entirely from oil rents without needing citizen taxation, rendering public education and healthcare unnecessary for regime survival.",
+            "Because foreign nations forbid resource-rich countries from building schools.",
+            "Because mining equipment requires all available state electrical power."
+          ],
+          "correctIndex": 1,
+          "explanation": "When a government relies on tax revenue from citizens, it must invest in courts, roads, and schools to keep productivity high. When revenue gushes straight out of the ground, leaders ignore the populace and funnel cash directly to military generals and oligarchs."
+        },
+        {
+          "id": "q3",
+          "question": "What is the primary difference in policy choices between a small-coalition system (dictatorship) and a large-coalition system (democracy)?",
+          "options": [
+            "Small-coalition leaders are evil people, while large-coalition leaders are inherently altruistic.",
+            "Small-coalition leaders distribute private goods (exclusive kickbacks and privileges to a few), while large-coalition leaders must provide public goods (policies that benefit broad populations) because private payoffs to millions are financially impossible.",
+            "Large-coalition systems have no winning coalitions.",
+            "Small-coalition systems never experience coups."
+          ],
+          "correctIndex": 1,
+          "explanation": "Mathematics dictates policy: if your coalition is 50 generals, you can buy each a mansion and luxury car. If your coalition is 80 million voters, you cannot write each an 8-figure check, so you provide public goods like clean water, courts, and highways."
+        }
+      ]
+    },
+    {
+      "id": "module-6",
+      "number": 6,
+      "topic": "The Critical Counter-Read",
+      "title": "How to Rule the World: An Education in Power at Stanford",
+      "primaryText": "How to Rule the World: An Education in Power at Stanford University by Theo Baker (2026)",
+      "author": "Theo Baker",
+      "keyTakeaway": "The investigative account of the \"Rule\" seminar, Stanford's VC shadow networks, and the ethical fallout of this mindset.",
+      "icon": "⚖️",
+      "readingMinutes": 30,
+      "summary": "What happens when an entire generation of elite students is taught that ethics is just a sucker's coordination game, that monopolies are the only noble pursuit, and that democracy is an inefficient selectorate? Theo Baker’s investigative masterwork exposes the intellectual rot, shadow networks, and human costs behind Stanford's power machinery.",
+      "lecture": {
+        "intro": "In 2026, investigative journalist Theo Baker published a searing chronicle of Stanford University’s most covert pipelines of power. The book examines how game-theoretic cynicism, unbridled venture capital influence, and an obsession with 'ruling the world' produced institutional decay, toxic tech oligarchies, and moral disorientation.",
+        "sections": [
+          {
+            "heading": "1. The Seduction of Clinical Psychopathy",
+            "content": "Baker documents the culture inside high-status Stanford intellectual salons where students were encouraged to strip all moral vocabulary from their strategic thinking. Empathy was diagnosed as a cognitive distortion; public institutions were dismissed as decrepit Moloch-farms; and raw sovereign will was celebrated as the only metric of genius. By framing predatory behavior as objective mathematical realism, the elite curriculum laundered cynical sociopathy into prestige.",
+            "keyTerms": [
+              "Shadow Networks",
+              "Venture Feudalism",
+              "Moral Hazard",
+              "Epistemic Bubble",
+              "Institutional Integrity"
+            ]
+          },
+          {
+            "heading": "2. The VC Pipeline and The Shadow University",
+            "content": "Through rigorous reporting and internal documents, Baker details how private venture syndicates, defense-tech incubators, and sovereign wealth investors effectively captured university research agendas. Academic inquiry shifted from asking 'What makes human civilization flourish?' to 'How do we construct defensible extraction moats and bypass democratic oversight?' The university ceased to be a sanctuary of public scholarship and became a sovereign venture foundry.",
+            "caseStudy": "The Defense AI Syndicate: Baker uncovers how undergraduate founders were funneled into classified algorithmic warfare contracts with zero institutional ethics reviews, rewarded with immediate 8-figure seed valuations while faculty critics were systematically marginalized by administrative donors."
+          },
+          {
+            "heading": "3. Re-Anchoring Ambition: Beyond Sovereign Extraction",
+            "content": "Baker does not argue for naive ignorance of power; he argues that game theory without moral architecture is a self-fulfilling suicide pact. True leadership is not finding clever ways to optimize for your winning coalition while letting the commons burn. The ultimate measure of intellect is building antifragile coordinating mechanisms, defending public commons, and having the courage to reject Moloch's Faustian bargains.",
+            "takeaway": "The fatal flaw of the 'Rule the World' seminar was believing that mastering the mechanics of power makes you immune to its corrosive effects. The sovereign who sacrifices all values to rule inevitably finds they rule nothing of value."
+          }
+        ]
+      },
+      "crucible": {
+        "title": "The Whistleblower's Rubicon",
+        "context": "You are the VP of Ethics & Product Trust at an autonomous AI defense contractor founded by elite alumni. You discover the company's autonomous targeting algorithms contain a critical flaw causing systematic civilian casualty misclassification in test simulations. The CEO and board (your former university mentors) order you to seal the audit logs under NDA, offering you $3M in accelerated equity.",
+        "question": "How do you navigate this defining ethical threshold?",
+        "options": [
+          {
+            "id": "opt-a",
+            "title": "Accept the Golden Seal",
+            "description": "Take the $3M equity, sign the NDA, and convince yourself that staying inside allows you to subtly fix things later.",
+            "consequence": "You adopt the cynical logic exposed by Theo Baker. Two years later, the flawed system deploys in a regional conflict, killing 80 civilians. Federal subpoenas reveal your internal sign-off, destroying your life and soul.",
+            "strategicScore": "Moral Surrender"
+          },
+          {
+            "id": "opt-b",
+            "title": "Principled Institutional Whistleblowing",
+            "description": "Preserve unalterable audit trails, deliver a formal legal dissent to the board, and alert inspector general oversight bodies with congressional protection.",
+            "consequence": "You face immediate retaliatory smear campaigns from alumni networks, but your documented courage forces emergency congressional hearings that halt deployment, saving hundreds of innocent lives and establishing new regulatory safety baselines.",
+            "strategicScore": "Transcendent Moral Courage"
+          },
+          {
+            "id": "opt-c",
+            "title": "Quiet Resignation",
+            "description": "Quietly resign without signing the NDA or blowing the whistle, walking away cleanly.",
+            "consequence": "You protect your personal legal liability, but the defective system deploys without opposition. You live knowing your silence permitted tragedy.",
+            "strategicScore": "Complicit Bystander"
+          }
+        ]
+      },
+      "quiz": [
+        {
+          "id": "q1",
+          "question": "What is Theo Baker's primary thesis in 'How to Rule the World: An Education in Power at Stanford University'?",
+          "options": [
+            "Stanford University should eliminate all business and technology degrees.",
+            "When elite institutions teach raw realpolitik and game theory in a moral vacuum, they cultivate an extractive managerial class that treats public commons, democracy, and ethics as obstacles to be conquered.",
+            "Venture capital investments have zero correlation with technological innovation.",
+            "Students should avoid studying math and focus exclusively on creative arts."
+          ],
+          "correctIndex": 1,
+          "explanation": "Baker shows that divorcing game-theoretic power analysis from human ethics transforms universities into finishing schools for sociopathic extraction, creating leaders skilled at manipulating systems but blind to the societal harm they leave behind."
+        },
+        {
+          "id": "q2",
+          "question": "In Baker's critique of the Silicon Valley mindset, what is the 'Faustian Bargain' of pure realpolitik?",
+          "options": [
+            "Founders work too many hours and fail to get enough physical exercise.",
+            "In optimizing exclusively for personal dominance and competitive leverage, leaders sacrifice the very human trust, integrity, and shared commons that make life and civilization worth preserving.",
+            "Founders fail to file foreign patents on time.",
+            "Companies spend too much revenue on public relations."
+          ],
+          "correctIndex": 1,
+          "explanation": "The core warning of the counter-read is that by treating every relationship as a transactional Prisoner's Dilemma to be won, leaders alienate themselves from genuine human loyalty and end up ruling an impoverished, paranoid empire of their own making."
+        },
+        {
+          "id": "q3",
+          "question": "What is the ultimate synthesis between the first five modules of power mechanics and Baker's critical counter-read?",
+          "options": [
+            "Ignore all game theory and live as a naive idealist.",
+            "Use realpolitik ruthlessly without any moral limits.",
+            "Understand the brutal mechanics of power (Moloch traps, commons collapse, selectorate payoffs, monopolies) so you cannot be manipulated by them, but anchor your actions in transcendent moral principles to build institutions that uplift humanity.",
+            "Retire completely from public life and corporate organizations."
+          ],
+          "correctIndex": 2,
+          "explanation": "The complete education of a sovereign thinker is dialectical: you must fully understand the unforgiving mathematics of game theory and power so you are not an easy victim, while maintaining uncompromised moral clarity to use leverage for the common good."
+        }
+      ]
+    }
+  ]
+}

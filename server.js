@@ -16,13 +16,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Paths
 const DATA_DIR = path.join(__dirname, 'data');
 const SUMMARIES_DIR = path.join(DATA_DIR, 'summaries');
+const COURSES_DIR = path.join(DATA_DIR, 'courses');
 const SETTINGS_PATH = path.join(DATA_DIR, 'settings.json');
 const HISTORY_PATH = path.join(DATA_DIR, 'history.json');
 const CUSTOM_BOOKS_PATH = path.join(DATA_DIR, 'custom-books.json');
+const COURSE_PROGRESS_PATH = path.join(DATA_DIR, 'course-progress.json');
 const ENV_PATH = path.join(__dirname, '.env');
 
 // Ensure directories exist safely (without throwing EROFS on serverless)
-[DATA_DIR, SUMMARIES_DIR].forEach(dir => {
+[DATA_DIR, SUMMARIES_DIR, COURSES_DIR].forEach(dir => {
   try {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   } catch (e) { }
@@ -972,6 +974,296 @@ app.get('/api/network', (req, res) => {
     port: PORT,
     mobileUrl: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : `http://localhost:${PORT}`
   });
+});
+
+// -----------------------------------------------------------------------------
+//  COURSES & INTERACTIVE MASTERCLASSES API
+// -----------------------------------------------------------------------------
+function getCourseProgress() {
+  const defaults = {
+    'stanford-power': {
+      completedModules: [],
+      quizScores: {},
+      lastActiveModule: 'module-1',
+      updatedAt: new Date().toISOString()
+    }
+  };
+  return readJson(COURSE_PROGRESS_PATH, defaults);
+}
+
+function saveCourseProgress(progress) {
+  writeJson(COURSE_PROGRESS_PATH, progress);
+}
+
+function getCourseById(id) {
+  const courseFile = path.join(COURSES_DIR, `${id}.json`);
+  if (fs.existsSync(courseFile)) {
+    try {
+      return JSON.parse(fs.readFileSync(courseFile, 'utf-8'));
+    } catch (e) { }
+  }
+  try {
+    return require(`./data/courses/${id}.json`);
+  } catch (e2) { }
+  return null;
+}
+
+function getAllCourses() {
+  const courses = [];
+  try {
+    if (fs.existsSync(COURSES_DIR)) {
+      const files = fs.readdirSync(COURSES_DIR).filter(f => f.endsWith('.json'));
+      files.forEach(f => {
+        try {
+          const raw = fs.readFileSync(path.join(COURSES_DIR, f), 'utf-8');
+          courses.push(JSON.parse(raw));
+        } catch (e) { }
+      });
+    }
+  } catch (err) { }
+
+  if (courses.length === 0) {
+    try {
+      courses.push(require('./data/courses/stanford-power.json'));
+    } catch (e) { }
+  }
+  return courses;
+}
+
+// 1. Get all courses with user progress
+app.get('/api/courses', (req, res) => {
+  try {
+    const rawCourses = getAllCourses();
+    const progressMap = getCourseProgress();
+
+    const list = rawCourses.map(c => {
+      const prog = progressMap[c.id] || { completedModules: [], quizScores: {}, lastActiveModule: c.modules[0]?.id || 'module-1' };
+      const completedCount = (prog.completedModules || []).length;
+      const totalModules = (c.modules || []).length;
+      const percent = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0;
+
+      return {
+        id: c.id,
+        title: c.title,
+        institution: c.institution,
+        code: c.code,
+        badge: c.badge,
+        tagline: c.tagline,
+        description: c.description,
+        duration: c.duration,
+        level: c.level,
+        icon: c.icon,
+        accentColor: c.accentColor,
+        bannerGradient: c.bannerGradient,
+        totalModules,
+        completedCount,
+        percentComplete: percent,
+        isCompleted: completedCount >= totalModules,
+        lastActiveModule: prog.lastActiveModule || c.modules[0]?.id || 'module-1',
+        modules: (c.modules || []).map(m => ({
+          id: m.id,
+          number: m.number,
+          topic: m.topic,
+          title: m.title,
+          primaryText: m.primaryText,
+          author: m.author,
+          keyTakeaway: m.keyTakeaway,
+          icon: m.icon,
+          readingMinutes: m.readingMinutes,
+          isCompleted: (prog.completedModules || []).includes(m.id),
+          quizScore: prog.quizScores?.[m.id] || null
+        }))
+      };
+    });
+
+    res.json({ courses: list });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 2. Get specific course with syllabus
+app.get('/api/courses/:id', (req, res) => {
+  try {
+    const course = getCourseById(req.params.id);
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+
+    const progressMap = getCourseProgress();
+    const prog = progressMap[course.id] || { completedModules: [], quizScores: {}, lastActiveModule: course.modules[0]?.id || 'module-1' };
+    const completedCount = (prog.completedModules || []).length;
+    const totalModules = (course.modules || []).length;
+    const percent = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0;
+
+    const enrichedModules = (course.modules || []).map(m => ({
+      id: m.id,
+      number: m.number,
+      topic: m.topic,
+      title: m.title,
+      primaryText: m.primaryText,
+      author: m.author,
+      keyTakeaway: m.keyTakeaway,
+      icon: m.icon,
+      readingMinutes: m.readingMinutes,
+      summary: m.summary,
+      isCompleted: (prog.completedModules || []).includes(m.id),
+      quizScore: prog.quizScores?.[m.id] || null
+    }));
+
+    res.json({
+      ...course,
+      completedCount,
+      totalModules,
+      percentComplete: percent,
+      isCompleted: completedCount >= totalModules,
+      progress: prog,
+      modules: enrichedModules
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 3. Get specific interactive module (lecture, dilemma crucible, quiz)
+app.get('/api/courses/:id/module/:moduleId', (req, res) => {
+  try {
+    const course = getCourseById(req.params.id);
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+
+    const mod = (course.modules || []).find(m => m.id === req.params.moduleId);
+    if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+    const progressMap = getCourseProgress();
+    const prog = progressMap[course.id] || { completedModules: [], quizScores: {} };
+    prog.lastActiveModule = mod.id;
+    progressMap[course.id] = prog;
+    saveCourseProgress(progressMap);
+
+    const modIndex = course.modules.findIndex(m => m.id === mod.id);
+    const prevModule = modIndex > 0 ? course.modules[modIndex - 1] : null;
+    const nextModule = modIndex < course.modules.length - 1 ? course.modules[modIndex + 1] : null;
+
+    res.json({
+      course: {
+        id: course.id,
+        title: course.title,
+        institution: course.institution,
+        code: course.code,
+        accentColor: course.accentColor,
+        totalModules: course.modules.length
+      },
+      module: mod,
+      nav: {
+        prev: prevModule ? { id: prevModule.id, title: prevModule.title, number: prevModule.number } : null,
+        next: nextModule ? { id: nextModule.id, title: nextModule.title, number: nextModule.number } : null
+      },
+      userState: {
+        isCompleted: (prog.completedModules || []).includes(mod.id),
+        quizScore: prog.quizScores?.[mod.id] || null
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4. Submit interactive module quiz
+app.post('/api/courses/:id/module/:moduleId/quiz', (req, res) => {
+  try {
+    const course = getCourseById(req.params.id);
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+
+    const mod = (course.modules || []).find(m => m.id === req.params.moduleId);
+    if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+    const userAnswers = req.body.answers || {};
+    const quiz = mod.quiz || [];
+    let correctCount = 0;
+    const results = [];
+
+    quiz.forEach(q => {
+      const selected = userAnswers[q.id];
+      const isCorrect = Number(selected) === Number(q.correctIndex);
+      if (isCorrect) correctCount++;
+      results.push({
+        id: q.id,
+        selected,
+        correctIndex: q.correctIndex,
+        isCorrect,
+        explanation: q.explanation
+      });
+    });
+
+    const total = quiz.length;
+    const percent = total > 0 ? Math.round((correctCount / total) * 100) : 100;
+    const passed = percent >= 66;
+
+    const progressMap = getCourseProgress();
+    if (!progressMap[course.id]) {
+      progressMap[course.id] = { completedModules: [], quizScores: {} };
+    }
+    const prog = progressMap[course.id];
+
+    if (!prog.quizScores) prog.quizScores = {};
+    prog.quizScores[mod.id] = {
+      score: correctCount,
+      total,
+      percent,
+      passed,
+      answeredAt: new Date().toISOString()
+    };
+
+    if (passed && !(prog.completedModules || []).includes(mod.id)) {
+      prog.completedModules.push(mod.id);
+    }
+    prog.updatedAt = new Date().toISOString();
+    saveCourseProgress(progressMap);
+
+    const completedCount = prog.completedModules.length;
+    const totalModules = course.modules.length;
+    const isCourseCompleted = completedCount >= totalModules;
+
+    res.json({
+      ok: true,
+      score: correctCount,
+      total,
+      percent,
+      passed,
+      results,
+      progress: {
+        completedModules: prog.completedModules,
+        completedCount,
+        totalModules,
+        percent: Math.round((completedCount / totalModules) * 100),
+        isComplete: isCourseCompleted,
+        quizScores: prog.quizScores
+      },
+      courseProgress: {
+        completedCount,
+        totalModules,
+        percentComplete: Math.round((completedCount / totalModules) * 100),
+        isCourseCompleted
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 5. Reset Course Progress
+app.post('/api/courses/:id/reset', (req, res) => {
+  try {
+    const progressMap = getCourseProgress();
+    progressMap[req.params.id] = {
+      completedModules: [],
+      quizScores: {},
+      lastActiveModule: 'module-1',
+      updatedAt: new Date().toISOString()
+    };
+    saveCourseProgress(progressMap);
+    res.json({ ok: true, message: 'Course progress reset successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // API 404 Guard: Ensure all unhandled /api/* routes return JSON rather than HTML
