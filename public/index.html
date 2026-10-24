@@ -407,130 +407,22 @@
       <!-- VIEW: COURSES (MASTERCLASSES & INTERACTIVE CURRICULA) -->
       <!-- ================================================================ -->
       <section class="view-section" id="view-courses">
-        <!-- Sub-view A: Courses Catalog / Overview -->
+        <!-- Courses Catalog / Overview -->
         <div class="courses-catalog-container" id="courses-catalog-view">
           <div class="courses-header-banner">
             <div class="courses-hero-badge">
               <span class="badge-icon">🏛️</span>
-              <span>EXECUTIVE ACADEMIC SEMINARS</span>
+              <span>STANFORD UNIVERSITY SEMINAR</span>
             </div>
-            <h1 class="courses-main-title">Elite Intellectual Curricula & Masterclasses</h1>
-            <p class="courses-main-subtitle">Go beyond single-book summaries. Dive into intensive university seminars featuring game-theoretic crucibles, deep analytical text breakdowns, and interactive scenario quizzes.</p>
+            <h1 class="courses-main-title">Executive Reading Curricula</h1>
+            <p class="courses-main-subtitle">Go beyond individual book picks. Master comprehensive university reading lists with the same high-impact 30-minute summaries across game theory, coordination, and power.</p>
           </div>
 
           <!-- Courses List Grid -->
           <div id="course-cards-list" class="courses-list-grid">
             <div class="courses-loading-state">
               <div class="loading-dots"><span></span><span></span><span></span></div>
-              <p>Loading university curricula...</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-view B: Interactive Classroom & Module Reader -->
-        <div class="course-classroom-container" id="course-classroom-view" style="display: none;">
-          <!-- Classroom Top Navigation Bar -->
-          <div class="classroom-top-nav">
-            <div class="classroom-nav-left">
-              <button class="btn-subtle-back" id="classroom-back-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                <span>All Courses</span>
-              </button>
-              <div class="classroom-breadcrumbs">
-                <span id="classroom-course-code" class="badge-pill-subtle">STANFORD-PWR-101</span>
-                <span class="breadcrumb-sep">/</span>
-                <span id="classroom-module-num" class="breadcrumb-current">Module 1 of 6</span>
-              </div>
-            </div>
-
-            <div class="classroom-nav-right">
-              <div class="module-quick-progress">
-                <div class="mini-progress-track">
-                  <div class="mini-progress-fill" id="classroom-progress-fill" style="width: 0%;"></div>
-                </div>
-                <span id="classroom-progress-text" class="mini-progress-label">0% Complete</span>
-              </div>
-              <button class="btn btn-secondary btn-sm" id="classroom-syllabus-toggle-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                Syllabus
-              </button>
-            </div>
-          </div>
-
-          <!-- Classroom Main Layout: Sidebar Syllabus + Main Lesson Canvas -->
-          <div class="classroom-body-layout">
-            <!-- Syllabus Drawer Sidebar -->
-            <aside class="classroom-syllabus-sidebar" id="classroom-syllabus-sidebar">
-              <div class="syllabus-sidebar-header">
-                <h3 class="syllabus-sidebar-title">Course Syllabus</h3>
-                <span class="syllabus-modules-count" id="syllabus-modules-count">6 Modules</span>
-              </div>
-              <div class="syllabus-module-nav-list" id="syllabus-module-nav-list">
-                <!-- Injected via JavaScript -->
-              </div>
-              <div class="syllabus-sidebar-footer">
-                <button class="btn btn-subtle-reset" id="course-reset-progress-btn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v6h6"></path><path d="M21 12A9 9 0 0 0 6 5.3L3 8"></path><path d="M21 22v-6h-6"></path><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"></path></svg>
-                  Reset Progress
-                </button>
-              </div>
-            </aside>
-
-            <!-- Main Lesson Canvas -->
-            <article class="classroom-main-canvas" id="classroom-main-canvas">
-              <div id="module-content-mount">
-                <!-- Injected via JavaScript -->
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <!-- Sub-view C: Final Capstone Certificate Modal -->
-        <div class="certificate-modal-backdrop" id="certificate-modal-backdrop" style="display:none;">
-          <div class="certificate-modal-container">
-            <button class="certificate-close-btn" id="close-certificate-btn">&times;</button>
-            <div class="certificate-document" id="certificate-print-area">
-              <div class="certificate-border-outer">
-                <div class="certificate-border-inner">
-                  <div class="cert-crest">🏛️</div>
-                  <div class="cert-institution">STANFORD UNIVERSITY EXECUTIVE SEMINAR</div>
-                  <div class="cert-subtitle">CERTIFICATE OF MASTERCLASS COMPLETION</div>
-                  
-                  <div class="cert-presented">This credential certifies that the scholar has mastered</div>
-                  <div class="cert-course-title">So You Think You Can Rule the World?</div>
-                  <div class="cert-course-sub">Game Theory, Multipolar Traps, Monopolies & Selectorate Power Dynamics</div>
-                  
-                  <div class="cert-curriculum-summary">
-                    Demonstrating analytical rigor across Scott Alexander’s Multipolar Traps, Ostrom’s Common-Pool Resource Governance, Axelrod’s Iterated Cooperation, Thiel’s Zero-to-One Moats, Selectorate Theory, and Theo Baker’s Institutional Counter-Critique.
-                  </div>
-
-                  <div class="cert-footer-row">
-                    <div class="cert-footer-col">
-                      <div class="cert-sign-line"></div>
-                      <div class="cert-sign-name">Stanford Political Economy Group</div>
-                      <div class="cert-sign-title">Academic Directorate</div>
-                    </div>
-                    <div class="cert-seal-badge">
-                      <div class="cert-seal-inner">VERIFIED<br>HONORS</div>
-                    </div>
-                    <div class="cert-footer-col">
-                      <div class="cert-sign-line"></div>
-                      <div class="cert-date" id="cert-issue-date">October 2026</div>
-                      <div class="cert-credential-id" id="cert-credential-id">ID: STANFORD-PWR-9842</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="certificate-actions-row">
-              <button class="btn btn-primary" onclick="window.print()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                Print / Save Certificate
-              </button>
-              <button class="btn btn-secondary" id="cert-back-to-courses-btn">
-                Back to Courses
-              </button>
+              <p>Loading course curricula...</p>
             </div>
           </div>
         </div>

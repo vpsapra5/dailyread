@@ -489,11 +489,7 @@
     else if (page === 'stats') loadStatsView();
     else if (page === 'settings') loadSettingsView();
     else if (page === 'courses' || page === 'course') {
-      if (param) {
-        loadCourseModule(param, subParam || 'module-1');
-      } else {
-        loadCoursesCatalog();
-      }
+      loadCoursesCatalog();
     }
   }
 
@@ -1513,20 +1509,15 @@
   }
 
   // --------------------------------------------------------------------------
-  // VIEW: COURSES (MASTERCLASSES, CRUCIBLES & INTERACTIVE QUIZZES)
+  // VIEW: COURSES (CURATED 30-MINUTE READING SEMINARS)
   // --------------------------------------------------------------------------
   async function loadCoursesCatalog() {
-    const catalogView = document.getElementById('courses-catalog-view');
-    const classroomView = document.getElementById('course-classroom-view');
-    if (catalogView) catalogView.style.display = 'block';
-    if (classroomView) classroomView.style.display = 'none';
-
     const listEl = document.getElementById('course-cards-list');
     if (listEl) {
       listEl.innerHTML = `
         <div class="courses-loading-state">
           <div class="loading-dots"><span></span><span></span><span></span></div>
-          <p>Loading Stanford seminars & curricula...</p>
+          <p>Loading course curricula & summaries...</p>
         </div>
       `;
     }
@@ -1557,48 +1548,49 @@
     }
 
     listEl.innerHTML = courses.map(course => {
-      const progress = course.progress || { completedModules: [], percent: 0, isComplete: false };
-      const completedCount = (progress.completedModules || []).length;
-      const totalModules = course.totalModules || 6;
-      const percent = progress.percent || Math.round((completedCount / totalModules) * 100);
-      const isComplete = progress.isComplete || percent === 100;
+      const books = course.books || [];
+      const totalBooks = books.length || 6;
+      const completedCount = books.filter(b => b.isFinished).length;
+      const percent = totalBooks > 0 ? Math.round((completedCount / totalBooks) * 100) : 0;
+      const isComplete = completedCount >= totalBooks;
 
-      // Determine next module to tackle
-      let nextModuleId = 'module-1';
-      if (course.modules && course.modules.length > 0) {
-        const uncompleted = course.modules.find(m => !progress.completedModules.includes(m.id));
-        if (uncompleted) nextModuleId = uncompleted.id;
-        else nextModuleId = course.modules[0].id;
-      }
-
-      // Action button text
-      let ctaText = 'Enter Seminar (Start Module 1)';
-      if (isComplete) ctaText = 'Review Seminar & Honors';
-      else if (completedCount > 0) ctaText = `Continue Seminar (Module ${nextModuleId.replace('module-', '')})`;
-
-      const modulesHtml = (course.modules || []).map(m => {
-        const isDone = (progress.completedModules || []).includes(m.id);
-        const scoreInfo = (progress.quizScores && progress.quizScores[m.id]) ? progress.quizScores[m.id] : null;
-        const statusBadge = isDone 
-          ? `<span class="badge-status-completed">✓ Mastered • ${scoreInfo ? scoreInfo.percent + '%' : '100%'}</span>`
-          : `<span class="badge-status-ready">Ready to Learn</span>`;
+      const booksHtml = books.map(b => {
+        const domainStyle = DOMAIN_STYLES[b.domain] || DOMAIN_STYLES.mind;
+        const isFinished = Boolean(b.isFinished);
+        const statusBadge = isFinished 
+          ? `<span class="badge-status-completed">✓ Finished</span>`
+          : `<span class="badge-status-ready">📖 30-Min Summary Ready</span>`;
 
         return `
-          <div class="syllabus-grid-card ${isDone ? 'is-completed' : ''}" onclick="window.DailyRead.openModule('${course.id}', '${m.id}')">
-            <div class="syllabus-grid-card-top">
-              <span class="module-number-pill">Module ${m.number}</span>
-              ${statusBadge}
+          <div class="course-book-row-card ${isFinished ? 'is-completed' : ''}" onclick="navigateTo('read/${b.bookId}')">
+            <!-- Left: Styled Mini Cover -->
+            <div class="course-book-cover-wrap" style="background: ${domainStyle.grad};">
+              <span class="course-cover-icon">${domainStyle.icon || '📖'}</span>
+              <div class="course-cover-info">
+                <div class="course-cover-title">${escapeHtml(b.title)}</div>
+                <div class="course-cover-author">${escapeHtml(b.author)}</div>
+              </div>
             </div>
-            <div class="syllabus-card-topic">${escapeHtml(m.topic)}</div>
-            <div class="syllabus-card-text">
-              <strong>${escapeHtml(m.primaryText)}</strong>
+
+            <!-- Middle: Content & Framework Info -->
+            <div class="course-book-details">
+              <div class="course-book-header-line">
+                <span class="course-topic-pill">Module ${b.number}: ${escapeHtml(b.topic)}</span>
+                ${statusBadge}
+              </div>
+              <h3 class="course-book-title">${escapeHtml(b.title)}</h3>
+              <div class="course-book-author-text">by ${escapeHtml(b.author)}</div>
+              <div class="course-book-takeaway">
+                <strong>Core Takeaway:</strong> ${escapeHtml(b.keyTakeaway)}
+              </div>
             </div>
-            <div class="syllabus-card-takeaway">${escapeHtml(m.keyTakeaway)}</div>
-            <div class="syllabus-card-footer">
-              <span class="syllabus-card-cta">
-                <span>${isDone ? 'Review Module' : 'Study Lesson'}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </span>
+
+            <!-- Right: Action Button -->
+            <div class="course-book-action">
+              <button class="btn ${isFinished ? 'btn-secondary' : 'btn-primary'}" onclick="event.stopPropagation(); navigateTo('read/${b.bookId}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>${isFinished ? 'Re-read Summary' : 'Read 30-Min Summary'}</span>
+              </button>
             </div>
           </div>
         `;
@@ -1618,10 +1610,10 @@
             <p class="course-hero-desc">${escapeHtml(course.description || '')}</p>
 
             <div class="course-meta-tags-row">
-              <span class="meta-tag">⏱️ ${escapeHtml(course.duration || '6 Modules • ~3 Hours')}</span>
+              <span class="meta-tag">⏱️ ${escapeHtml(course.duration || '6 Summaries • 30 Mins Each')}</span>
               <span class="meta-tag">🎯 ${escapeHtml(course.level || 'Advanced Strategic Theory')}</span>
               <span class="meta-tag">👥 ${escapeHtml(course.instructor || 'Stanford Political Economy Group')}</span>
-              <span class="meta-tag meta-tag-highlight">⭐ Interactive Crucible Scenarios & Quizzes</span>
+              <span class="meta-tag meta-tag-highlight">📖 Full 30-Minute DailyRead Summaries</span>
             </div>
           </div>
 
@@ -1630,563 +1622,29 @@
             <div class="progress-ribbon-left">
               <div class="progress-metric-label">
                 ${isComplete 
-                  ? '🏆 <strong>Honors Credential Earned:</strong> Seminar Completed' 
-                  : `Academic Progress: <strong>${completedCount} of ${totalModules} Modules Mastered (${percent}%)</strong>`
+                  ? '🏆 <strong>Curriculum Completed:</strong> All 6 Summaries Finished!' 
+                  : `Curriculum Progress: <strong>${completedCount} of ${totalBooks} Summaries Read (${percent}%)</strong>`
                 }
               </div>
               <div class="course-main-progress-track">
                 <div class="course-main-progress-fill" style="width: ${percent}%;"></div>
               </div>
             </div>
-            <div class="progress-ribbon-actions">
-              <button class="btn btn-primary" onclick="window.DailyRead.openModule('${course.id}', '${nextModuleId}')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                ${ctaText}
-              </button>
-              ${isComplete ? `
-                <button class="btn btn-gold-cert" onclick="window.DailyRead.showCertificate('${course.id}')">
-                  🎓 View Honors Certificate
-                </button>
-              ` : ''}
-            </div>
           </div>
 
-          <!-- Syllabus Section -->
-          <div class="course-syllabus-section">
+          <!-- Course Books List -->
+          <div class="course-books-list-container">
             <div class="syllabus-section-header">
-              <h3 class="syllabus-section-title">Complete 6-Part Curriculum & Frameworks</h3>
-              <span class="syllabus-section-sub">Includes deep lecture texts, strategic crucibles, and scenario-based mastery exams</span>
+              <h3 class="syllabus-section-title">Required Seminar Texts & 30-Minute Breakdowns</h3>
+              <span class="syllabus-section-sub">Read any summary with Kindle-style page flipping, audio narration, and key takeaways</span>
             </div>
-            <div class="syllabus-cards-grid">
-              ${modulesHtml}
+            <div class="course-books-stack">
+              ${booksHtml}
             </div>
           </div>
         </div>
       `;
     }).join('');
-  }
-
-  async function loadCourseModule(courseId, moduleId) {
-    const catalogView = document.getElementById('courses-catalog-view');
-    const classroomView = document.getElementById('course-classroom-view');
-    if (catalogView) catalogView.style.display = 'none';
-    if (classroomView) classroomView.style.display = 'block';
-
-    state.activeCourseId = courseId;
-    state.activeCourseModule = moduleId;
-    state.quizAnswers = {};
-
-    const mount = document.getElementById('module-content-mount');
-    if (mount) {
-      mount.innerHTML = `
-        <div class="courses-loading-state" style="padding: 4rem 1rem;">
-          <div class="loading-dots"><span></span><span></span><span></span></div>
-          <p>Loading module curriculum & simulation...</p>
-        </div>
-      `;
-    }
-
-    try {
-      const data = await api(`/api/courses/${courseId}/module/${moduleId}`);
-      state.activeCourse = data.course;
-      state.courseProgress = data.progress;
-      renderCourseClassroom(data.course, data.module, data.progress);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-      if (mount) {
-        mount.innerHTML = `
-          <div class="empty-state-card">
-            <h3>Could not load module</h3>
-            <p>${escapeHtml(err.message || 'Error fetching course module')}</p>
-            <button class="btn btn-secondary" onclick="navigateTo('courses')">Back to Courses</button>
-          </div>
-        `;
-      }
-    }
-  }
-
-  function formatModuleParagraphs(text) {
-    if (!text) return '';
-    return text.split(/\n\n+/).map(p => {
-      let trimmed = p.trim();
-      if (!trimmed) return '';
-      return `<p>${formatInline(trimmed)}</p>`;
-    }).join('');
-  }
-
-  function renderCourseClassroom(course, mod, progress) {
-    // 1. Update Top Bar Nav
-    const codeEl = document.getElementById('classroom-course-code');
-    if (codeEl) codeEl.textContent = course.code || 'STANFORD-PWR-101';
-
-    const modNumEl = document.getElementById('classroom-module-num');
-    if (modNumEl) modNumEl.textContent = `Module ${mod.number} of ${course.modules ? course.modules.length : 6}: ${mod.topic}`;
-
-    const completed = (progress && progress.completedModules) || [];
-    const total = (course.modules && course.modules.length) || 6;
-    const percent = Math.round((completed.length / total) * 100);
-
-    const fillEl = document.getElementById('classroom-progress-fill');
-    if (fillEl) fillEl.style.width = `${percent}%`;
-
-    const textEl = document.getElementById('classroom-progress-text');
-    if (textEl) textEl.textContent = `${completed.length}/${total} Mastered (${percent}%)`;
-
-    // 2. Render Sidebar Syllabus List
-    const navListEl = document.getElementById('syllabus-module-nav-list');
-    if (navListEl && course.modules) {
-      navListEl.innerHTML = course.modules.map(m => {
-        const isCurrent = m.id === mod.id;
-        const isDone = completed.includes(m.id);
-        const iconBadge = isDone 
-          ? `<span class="module-status-icon is-completed">✓</span>` 
-          : `<span class="module-status-icon">${m.number}</span>`;
-
-        return `
-          <button class="syllabus-nav-item ${isCurrent ? 'active' : ''} ${isDone ? 'done' : ''}" onclick="window.DailyRead.openModule('${course.id}', '${m.id}')">
-            ${iconBadge}
-            <div class="syllabus-nav-item-content">
-              <div class="syllabus-nav-topic">${escapeHtml(m.topic)}</div>
-              <div class="syllabus-nav-text">${escapeHtml(m.primaryText || '')}</div>
-            </div>
-          </button>
-        `;
-      }).join('');
-    }
-
-    const countEl = document.getElementById('syllabus-modules-count');
-    if (countEl) countEl.textContent = `${completed.length} of ${total} Done`;
-
-    // 3. Render Module Canvas
-    const mount = document.getElementById('module-content-mount');
-    if (!mount) return;
-
-    // Lecture Sections HTML
-    const sectionsHtml = (mod.lecture && mod.lecture.sections || []).map(sec => {
-      let termsHtml = '';
-      if (sec.keyTerms && sec.keyTerms.length > 0) {
-        termsHtml = `
-          <div class="lesson-terms-row">
-            <span class="terms-label">Key Frameworks:</span>
-            ${sec.keyTerms.map(t => `<span class="term-pill">${escapeHtml(t)}</span>`).join('')}
-          </div>
-        `;
-      }
-
-      let caseStudyHtml = '';
-      if (sec.caseStudy) {
-        caseStudyHtml = `
-          <div class="lesson-case-study-card">
-            <div class="case-study-header">
-              <span class="case-study-badge">🔍 Field Analysis & Case Study</span>
-            </div>
-            <div class="case-study-body">${escapeHtml(sec.caseStudy)}</div>
-          </div>
-        `;
-      }
-
-      let takeawayHtml = '';
-      if (sec.takeaway) {
-        takeawayHtml = `
-          <div class="lesson-takeaway-highlight">
-            <div class="takeaway-icon">💡</div>
-            <div class="takeaway-text"><strong>Key Principle:</strong> ${escapeHtml(sec.takeaway)}</div>
-          </div>
-        `;
-      }
-
-      return `
-        <section class="lesson-content-section">
-          <h2 class="lesson-section-heading">${escapeHtml(sec.heading)}</h2>
-          <div class="lesson-section-text">${formatModuleParagraphs(sec.content)}</div>
-          ${termsHtml}
-          ${caseStudyHtml}
-          ${takeawayHtml}
-        </section>
-      `;
-    }).join('');
-
-    // Crucible HTML
-    const crucible = mod.crucible;
-    let crucibleHtml = '';
-    if (crucible) {
-      crucibleHtml = `
-        <div class="crucible-container" id="crucible-simulation-container">
-          <div class="crucible-badge">
-            <span class="badge-fire-icon">⚔️</span>
-            <span>THE CRUCIBLE • STRATEGIC DECISION SIMULATION</span>
-          </div>
-
-          <h2 class="crucible-title">${escapeHtml(crucible.title)}</h2>
-          <div class="crucible-context">
-            <p>${escapeHtml(crucible.context)}</p>
-          </div>
-
-          <div class="crucible-question-prompt">
-            <strong>The Dilemma:</strong> ${escapeHtml(crucible.question)}
-          </div>
-
-          <div class="crucible-options-grid">
-            ${(crucible.options || []).map(opt => `
-              <button class="crucible-option-btn" id="btn-crucible-${opt.id}" onclick="window.DailyRead.selectCrucibleChoice('${opt.id}')">
-                <div class="crucible-opt-header">
-                  <span class="crucible-opt-marker">${opt.id.toUpperCase()}</span>
-                  <span class="crucible-opt-title">${escapeHtml(opt.title)}</span>
-                </div>
-                <div class="crucible-opt-desc">${escapeHtml(opt.description)}</div>
-              </button>
-            `).join('')}
-          </div>
-
-          <!-- Consequence display mount -->
-          <div id="crucible-consequence-mount" style="display: none;"></div>
-        </div>
-      `;
-    }
-
-    // Quiz HTML
-    const quizList = mod.quiz || [];
-    const isModuleCompleted = completed.includes(mod.id);
-    const existingScore = (progress && progress.quizScores && progress.quizScores[mod.id]) || null;
-
-    let quizHtml = '';
-    if (quizList.length > 0) {
-      quizHtml = `
-        <div class="course-quiz-container" id="module-quiz-section">
-          <div class="quiz-header-card">
-            <div class="quiz-header-eyebrow">
-              <span class="quiz-badge-icon">📝</span>
-              <span>COMPREHENSION & MASTERY EXAM</span>
-            </div>
-            <h2 class="quiz-main-title">Module ${mod.number} Mastery Assessment</h2>
-            <p class="quiz-subtitle">Answer these high-stakes scenario questions to prove conceptual retention. Score 66%+ to earn credit and advance.</p>
-            ${existingScore ? `
-              <div class="quiz-prev-score-badge">
-                <span>✓ Previously Completed: <strong>${existingScore.score}/${existingScore.total} (${existingScore.percent}%)</strong></span>
-              </div>
-            ` : ''}
-          </div>
-
-          <div class="quiz-questions-list">
-            ${quizList.map((q, qIdx) => `
-              <div class="quiz-question-card" id="quiz-card-${q.id}">
-                <div class="quiz-question-number">Question ${qIdx + 1} of ${quizList.length}</div>
-                <div class="quiz-question-text">${escapeHtml(q.question)}</div>
-                <div class="quiz-options-list">
-                  ${(q.options || []).map((optText, oIdx) => `
-                    <button class="quiz-opt-btn" id="quiz-btn-${q.id}-${oIdx}" onclick="window.DailyRead.selectQuizOption('${q.id}', ${oIdx})">
-                      <span class="quiz-opt-marker">${String.fromCharCode(65 + oIdx)}.</span>
-                      <span class="quiz-opt-label">${escapeHtml(optText)}</span>
-                    </button>
-                  `).join('')}
-                </div>
-                <div class="quiz-explanation-card" id="quiz-exp-${q.id}" style="display:none;"></div>
-              </div>
-            `).join('')}
-          </div>
-
-          <div class="quiz-actions-row">
-            <div id="quiz-result-banner" style="font-size: 0.95rem; font-weight: 600;"></div>
-            <button class="btn btn-primary" id="btn-submit-quiz" onclick="window.DailyRead.submitModuleQuiz('${course.id}', '${mod.id}')">
-              Submit Exam Answers
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    // Navigation Footer
-    const curIndex = (course.modules || []).findIndex(m => m.id === mod.id);
-    const prevMod = curIndex > 0 ? course.modules[curIndex - 1] : null;
-    const nextMod = (curIndex >= 0 && curIndex < course.modules.length - 1) ? course.modules[curIndex + 1] : null;
-
-    const navFooterHtml = `
-      <div class="module-nav-footer">
-        <div>
-          ${prevMod ? `
-            <button class="btn btn-secondary" onclick="window.DailyRead.openModule('${course.id}', '${prevMod.id}')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              Module ${prevMod.number}: ${escapeHtml(prevMod.topic)}
-            </button>
-          ` : `
-            <button class="btn btn-subtle" onclick="navigateTo('courses')">
-              ← Return to Syllabus
-            </button>
-          `}
-        </div>
-
-        <div>
-          ${nextMod ? `
-            <button class="btn btn-primary" onclick="window.DailyRead.openModule('${course.id}', '${nextMod.id}')">
-              Next: Module ${nextMod.number} (${escapeHtml(nextMod.topic)})
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
-          ` : `
-            <button class="btn btn-gold-cert" onclick="window.DailyRead.showCertificate('${course.id}')">
-              🎓 View Stanford Honors Certificate
-            </button>
-          `}
-        </div>
-      </div>
-    `;
-
-    mount.innerHTML = `
-      <!-- Module Header Hero -->
-      <header class="lesson-header-hero">
-        <div class="lesson-eyebrow-row">
-          <span class="lesson-module-badge">MODULE ${mod.number} OF ${total}</span>
-          <span class="lesson-topic-tag">${escapeHtml(mod.topic)}</span>
-          <span class="lesson-read-time">⏱️ ${mod.readingMinutes || 25} min study</span>
-        </div>
-
-        <h1 class="lesson-hero-title">${escapeHtml(mod.title)}</h1>
-
-        <div class="lesson-primary-text-card">
-          <div class="primary-text-icon">📖</div>
-          <div>
-            <div class="primary-text-label">Primary Foundation Text / Analytical Framework:</div>
-            <div class="primary-text-title">${escapeHtml(mod.primaryText)}</div>
-          </div>
-        </div>
-
-        <div class="lesson-takeaway-banner">
-          <span class="takeaway-banner-badge">Core Thesis:</span>
-          <span>${escapeHtml(mod.keyTakeaway)}</span>
-        </div>
-      </header>
-
-      <!-- Lecture Lead / Intro -->
-      ${mod.lecture && mod.lecture.intro ? `
-        <div class="lesson-lead-intro">
-          <p>${escapeHtml(mod.lecture.intro)}</p>
-        </div>
-      ` : ''}
-
-      <!-- Detailed Sections -->
-      <div class="lesson-sections-container">
-        ${sectionsHtml}
-      </div>
-
-      <!-- The Crucible Simulation -->
-      ${crucibleHtml}
-
-      <!-- Interactive Quiz -->
-      ${quizHtml}
-
-      <!-- Bottom Nav Footer -->
-      ${navFooterHtml}
-    `;
-
-    // Store crucible options in state for easy reference
-    state.activeCrucible = mod.crucible;
-  }
-
-  function selectCrucibleChoice(choiceId) {
-    const crucible = state.activeCrucible;
-    if (!crucible || !crucible.options) return;
-
-    // Highlight selected button
-    crucible.options.forEach(opt => {
-      const btn = document.getElementById(`btn-crucible-${opt.id}`);
-      if (btn) btn.classList.toggle('is-selected', opt.id === choiceId);
-    });
-
-    const chosen = crucible.options.find(o => o.id === choiceId);
-    if (!chosen) return;
-
-    const mount = document.getElementById('crucible-consequence-mount');
-    if (!mount) return;
-
-    let scoreColor = 'var(--accent-indigo)';
-    let scoreIcon = '🎯';
-    if (chosen.strategicScore.includes('Master')) {
-      scoreColor = 'var(--accent-emerald)';
-      scoreIcon = '⭐';
-    } else if (chosen.strategicScore.includes('Vulnerable') || chosen.strategicScore.includes('Idealistic')) {
-      scoreColor = 'var(--accent-gold)';
-      scoreIcon = '⚠️';
-    } else if (chosen.strategicScore.includes('Brittle') || chosen.strategicScore.includes('Defection')) {
-      scoreColor = 'var(--accent-rose)';
-      scoreIcon = '💥';
-    }
-
-    mount.style.display = 'block';
-    mount.innerHTML = `
-      <div class="crucible-consequence-card" style="border-left: 4px solid ${scoreColor}; animation: fadeIn 0.3s ease;">
-        <div class="consequence-header-row">
-          <span class="consequence-badge" style="color:${scoreColor}; border-color:${scoreColor}44; background:${scoreColor}18;">
-            ${scoreIcon} Strategic Classification: <strong>${escapeHtml(chosen.strategicScore)}</strong>
-          </span>
-          <span class="consequence-opt-ref">Directive: ${escapeHtml(chosen.title)}</span>
-        </div>
-        <div class="consequence-text">
-          <p>${escapeHtml(chosen.consequence)}</p>
-        </div>
-      </div>
-    `;
-    mount.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  function selectQuizOption(qId, oIdx) {
-    state.quizAnswers[qId] = oIdx;
-
-    // Toggle selected class on this question's buttons
-    const card = document.getElementById(`quiz-card-${qId}`);
-    if (card) {
-      card.querySelectorAll('.quiz-opt-btn').forEach((btn, idx) => {
-        btn.classList.toggle('is-selected', idx === oIdx);
-      });
-    }
-  }
-
-  async function submitModuleQuiz(courseId, moduleId) {
-    const mod = (state.activeCourse && state.activeCourse.modules && state.activeCourse.modules.find(m => m.id === moduleId)) 
-      || (state.activeCourseModule === moduleId && state.activeCourse);
-
-    const questions = (mod && mod.quiz) || [];
-    if (questions.length === 0) return;
-
-    // Check that all questions have been answered
-    const unanswered = questions.filter(q => state.quizAnswers[q.id] === undefined);
-    if (unanswered.length > 0) {
-      showToast(`Please answer all ${questions.length} questions before submitting.`, 'error');
-      const firstUnansweredCard = document.getElementById(`quiz-card-${unanswered[0].id}`);
-      if (firstUnansweredCard) {
-        firstUnansweredCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return;
-    }
-
-    const submitBtn = document.getElementById('btn-submit-quiz');
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Grading Exam...';
-    }
-
-    try {
-      const res = await api(`/api/courses/${courseId}/module/${moduleId}/quiz`, {
-        method: 'POST',
-        body: JSON.stringify({ answers: state.quizAnswers })
-      });
-
-      // Update quiz UI with results
-      (res.results || []).forEach(r => {
-        const card = document.getElementById(`quiz-card-${r.questionId}`);
-        if (!card) return;
-
-        // Color option buttons
-        card.querySelectorAll('.quiz-opt-btn').forEach((btn, idx) => {
-          btn.classList.remove('is-selected');
-          if (idx === r.correctIndex) {
-            btn.classList.add('is-correct');
-          } else if (idx === r.selectedIndex && !r.isCorrect) {
-            btn.classList.add('is-incorrect');
-          }
-        });
-
-        // Show detailed explanation card
-        const expEl = document.getElementById(`quiz-exp-${r.questionId}`);
-        if (expEl) {
-          expEl.style.display = 'block';
-          expEl.innerHTML = `
-            <div style="font-weight: 700; margin-bottom: 0.25rem; color: ${r.isCorrect ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">
-              ${r.isCorrect ? '✓ Correct Analysis' : '✕ Strategic Miscalculation'}
-            </div>
-            <div>${escapeHtml(r.explanation)}</div>
-          `;
-        }
-      });
-
-      // Result banner
-      const banner = document.getElementById('quiz-result-banner');
-      if (banner) {
-        if (res.passed) {
-          banner.innerHTML = `
-            <span style="color: var(--accent-emerald);">
-              🎉 <strong>Exam Passed!</strong> Score: ${res.score}/${res.total} (${res.percent}%) • Module Mastered!
-            </span>
-          `;
-          showToast(`Module Mastered! Score: ${res.score}/${res.total} (${res.percent}%)`, 'success');
-        } else {
-          banner.innerHTML = `
-            <span style="color: var(--accent-gold);">
-              ⚠️ Score: ${res.score}/${res.total} (${res.percent}%). Review the analysis below and try again.
-            </span>
-          `;
-          showToast(`Exam score: ${res.score}/${res.total}. Passing score is 66%.`, 'info');
-        }
-      }
-
-      // Update progress in state
-      if (res.progress) {
-        state.courseProgress = res.progress;
-        const total = (state.activeCourse && state.activeCourse.modules && state.activeCourse.modules.length) || 6;
-        const completed = res.progress.completedModules || [];
-        const percent = Math.round((completed.length / total) * 100);
-
-        const fillEl = document.getElementById('classroom-progress-fill');
-        if (fillEl) fillEl.style.width = `${percent}%`;
-
-        const textEl = document.getElementById('classroom-progress-text');
-        if (textEl) textEl.textContent = `${completed.length}/${total} Mastered (${percent}%)`;
-
-        // Update sidebar items
-        completed.forEach(mId => {
-          const btn = document.querySelector(`.syllabus-nav-item[onclick*="'${mId}'"]`);
-          if (btn) btn.classList.add('done');
-        });
-
-        // If course is 100% completed, show celebratory toast and offer certificate
-        if (res.progress.isComplete || completed.length >= total) {
-          showToast('🎓 Stanford Masterclass Completed with Honors! Certificate Unlocked!', 'success');
-        }
-      }
-
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = res.passed ? 'Retake Exam' : 'Try Again';
-      }
-    } catch (err) {
-      showToast(err.message || 'Error submitting quiz', 'error');
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Exam Answers';
-      }
-    }
-  }
-
-  function showCertificate(courseId) {
-    const modal = document.getElementById('certificate-modal-backdrop');
-    if (!modal) return;
-
-    const issueDateEl = document.getElementById('cert-issue-date');
-    if (issueDateEl) {
-      const now = new Date();
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      issueDateEl.textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-    }
-
-    const credIdEl = document.getElementById('cert-credential-id');
-    if (credIdEl) {
-      credIdEl.textContent = `ID: STANFORD-PWR-${Math.floor(1000 + Math.random() * 9000)}`;
-    }
-
-    modal.style.display = 'flex';
-  }
-
-  async function resetCourseProgress(courseId) {
-    if (!confirm('Are you sure you want to reset all progress and quiz scores for this seminar?')) return;
-    try {
-      await api(`/api/courses/${courseId}/reset`, { method: 'POST' });
-      showToast('Course progress reset successfully.', 'info');
-      if (state.activeCourseModule) {
-        loadCourseModule(courseId, state.activeCourseModule);
-      } else {
-        loadCoursesCatalog();
-      }
-    } catch (err) {
-      showToast(err.message || 'Error resetting course', 'error');
-    }
   }
 
   // --------------------------------------------------------------------------
@@ -2799,50 +2257,7 @@
       showToast('Fiction ratio preference saved.', 'info');
     });
 
-    // Course Classroom Controls
-    const classroomBackBtn = document.getElementById('classroom-back-btn');
-    if (classroomBackBtn) {
-      classroomBackBtn.addEventListener('click', () => navigateTo('courses'));
-    }
 
-    const syllabusToggleBtn = document.getElementById('classroom-syllabus-toggle-btn');
-    if (syllabusToggleBtn) {
-      syllabusToggleBtn.addEventListener('click', () => {
-        const sidebar = document.getElementById('classroom-syllabus-sidebar');
-        if (sidebar) sidebar.classList.toggle('is-open');
-      });
-    }
-
-    const resetCourseBtn = document.getElementById('course-reset-progress-btn');
-    if (resetCourseBtn) {
-      resetCourseBtn.addEventListener('click', () => {
-        resetCourseProgress(state.activeCourseId || 'stanford-power');
-      });
-    }
-
-    const closeCertBtn = document.getElementById('close-certificate-btn');
-    if (closeCertBtn) {
-      closeCertBtn.addEventListener('click', () => {
-        const modal = document.getElementById('certificate-modal-backdrop');
-        if (modal) modal.style.display = 'none';
-      });
-    }
-
-    const certBackBtn = document.getElementById('cert-back-to-courses-btn');
-    if (certBackBtn) {
-      certBackBtn.addEventListener('click', () => {
-        const modal = document.getElementById('certificate-modal-backdrop');
-        if (modal) modal.style.display = 'none';
-        navigateTo('courses');
-      });
-    }
-
-    const certBackdrop = document.getElementById('certificate-modal-backdrop');
-    if (certBackdrop) {
-      certBackdrop.addEventListener('click', (e) => {
-        if (e.target === certBackdrop) certBackdrop.style.display = 'none';
-      });
-    }
   }
 
   // --------------------------------------------------------------------------
@@ -2919,24 +2334,6 @@
       weights[catId] = parseFloat(weight);
       await api('/api/settings', { method: 'POST', body: JSON.stringify({ weights }) });
       showToast('Weight updated.', 'info');
-    },
-    openModule: (courseId, moduleId) => {
-      navigateTo(`courses/${courseId}/${moduleId}`);
-    },
-    selectCrucibleChoice: (choiceId) => {
-      selectCrucibleChoice(choiceId);
-    },
-    selectQuizOption: (qId, oIdx) => {
-      selectQuizOption(qId, oIdx);
-    },
-    submitModuleQuiz: (courseId, moduleId) => {
-      submitModuleQuiz(courseId, moduleId);
-    },
-    showCertificate: (courseId) => {
-      showCertificate(courseId);
-    },
-    resetCourseProgress: (courseId) => {
-      resetCourseProgress(courseId);
     }
   };
 

@@ -246,5 +246,11 @@
 {"title":"Mere Christianity","author":"C.S. Lewis","cat":"ethics"},
 {"title":"Justice: What's the Right Thing to Do?","author":"Michael J. Sandel","cat":"ethics"},
 {"title":"The Analects","author":"Confucius","cat":"ethics"},
-{"title":"The Hero with a Thousand Faces","author":"Joseph Campbell","cat":"ethics"}
+{"title":"The Hero with a Thousand Faces","author":"Joseph Campbell","cat":"ethics"},
+
+{"id":"meditations-on-moloch","title":"Meditations on Moloch","author":"Scott Alexander","cat":"philosophy","domain":"mind","desc":"Why rational agents competing without coordination sacrifice every human value for a competitive edge."},
+{"id":"the-tragedy-of-the-commons","title":"The Tragedy of the Commons & Governing the Commons","author":"Garrett Hardin & Elinor Ostrom","cat":"environment","domain":"world","desc":"Why shared resources collapse and how communities self-organize to govern them."},
+{"id":"the-evolution-of-cooperation","title":"The Evolution of Cooperation","author":"Robert Axelrod","cat":"psychology","domain":"mind","desc":"How iterated Prisoner's Dilemmas work and why Tit-for-Tat and reciprocal cooperation dominate."},
+{"id":"the-dictators-handbook","title":"The Dictator's Handbook","author":"Bruce Bueno de Mesquita & Alastair Smith","cat":"politics","domain":"world","desc":"Selectorate theory: why leaders and CEOs act purely to keep their winning coalition paid."},
+{"id":"how-to-rule-the-world","title":"How to Rule the World: An Education in Power at Stanford University","author":"Theo Baker","cat":"investigative","domain":"world","desc":"The investigative account of Stanford's 'Rule' power seminar and the ethical fallout of pure leverage."}
 ]
