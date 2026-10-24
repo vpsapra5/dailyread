@@ -648,7 +648,8 @@
       state.activeSummaryMeta = res ? res.meta : null;
 
       if (!res || !res.markdown) {
-        const isGenerating = res.status && res.status.generating;
+        const isGenerating = Boolean(res && res.status && res.status.generating);
+        const bookTitle = (res && res.book && res.book.title) || (state.books.find(b => b.id === bookId)?.title) || bookId;
         article.innerHTML = `
           <div style="text-align: center; padding: 4rem 1rem;">
             <div class="loading-dots" style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem; ${isGenerating ? '' : 'display:none;'}">
@@ -659,7 +660,7 @@
             </p>
             <p style="color: var(--text-secondary); max-width:460px; margin: 0 auto 1.5rem; font-size:0.95rem; line-height:1.6;">
               ${isGenerating 
-                ? 'Synthesizing comprehensive chapter breakdowns, mental models, and action checklists for "' + escapeHtml(res.book.title) + '". It will open automatically in ~45 seconds.'
+                ? 'Synthesizing comprehensive chapter breakdowns, mental models, and action checklists for "' + escapeHtml(bookTitle) + '". It will open automatically in ~45 seconds.'
                 : 'This book is in your curriculum catalog. Tap below to generate its 30-minute synthesis using Gemini.'}
             </p>
             ${isGenerating ? '<p style="color:var(--text-muted); font-size:0.85rem;">⏳ Auto-refreshing when complete...</p>' : `<button class="btn btn-primary" onclick="window.DailyRead.triggerGenerate('${bookId}')">⚡ Generate Now (~45s)</button>`}
@@ -1677,7 +1678,6 @@
         </div>
       `;
     }).join('');
-  }
 
     // Bind direct DOM click events for 100% reliable navigation
     listEl.querySelectorAll('.course-book-row-card').forEach(card => {
@@ -1694,6 +1694,7 @@
         if (bId) navigateTo(`read/${bId}`);
       });
     });
+  }
 
   // --------------------------------------------------------------------------
   // Event Bindings
