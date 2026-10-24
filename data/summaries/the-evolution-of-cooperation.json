@@ -1,8 +1,8 @@
 {
   "bookId": "the-evolution-of-cooperation",
-  "words": 5820,
-  "minutes": 30,
-  "model": "deep-synthesis",
+  "words": 5860,
+  "minutes": 25,
+  "model": "opus-frontier-cognition",
   "domain": "mind",
-  "generatedAt": "2026-10-24T15:36:00.000Z"
+  "generatedAt": "2026-10-24T20:48:53.335Z"
 }

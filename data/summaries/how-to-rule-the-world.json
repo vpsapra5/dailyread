@@ -1,8 +1,8 @@
 {
   "bookId": "how-to-rule-the-world",
-  "words": 5780,
-  "minutes": 30,
-  "model": "deep-synthesis",
+  "words": 5365,
+  "minutes": 23,
+  "model": "opus-frontier-cognition",
   "domain": "world",
-  "generatedAt": "2026-10-24T15:38:00.000Z"
+  "generatedAt": "2026-10-24T20:53:26.643Z"
 }

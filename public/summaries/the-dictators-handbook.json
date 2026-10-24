@@ -1,8 +1,8 @@
 {
   "bookId": "the-dictators-handbook",
-  "words": 5910,
-  "minutes": 30,
-  "model": "deep-synthesis",
+  "words": 6044,
+  "minutes": 26,
+  "model": "opus-frontier-cognition",
   "domain": "world",
-  "generatedAt": "2026-10-24T15:38:00.000Z"
+  "generatedAt": "2026-10-24T20:51:55.694Z"
 }

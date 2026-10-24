@@ -1,8 +1,8 @@
 {
   "bookId": "the-tragedy-of-the-commons",
-  "words": 5680,
-  "minutes": 30,
-  "model": "deep-synthesis",
+  "words": 6222,
+  "minutes": 27,
+  "model": "opus-frontier-cognition",
   "domain": "world",
-  "generatedAt": "2026-10-24T15:36:00.000Z"
+  "generatedAt": "2026-10-24T20:46:39.762Z"
 }

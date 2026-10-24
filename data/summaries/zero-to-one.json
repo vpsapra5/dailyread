@@ -1,8 +1,8 @@
 {
   "bookId": "zero-to-one",
-  "words": 5940,
-  "minutes": 30,
-  "model": "deep-synthesis",
+  "words": 6125,
+  "minutes": 27,
+  "model": "opus-frontier-cognition",
   "domain": "money",
-  "generatedAt": "2026-10-24T15:37:00.000Z"
+  "generatedAt": "2026-10-24T20:50:33.888Z"
 }
