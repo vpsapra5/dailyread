@@ -340,6 +340,7 @@ function Invoke-Route($Ctx) {
         foreach ($k in @('notifyTime','days','fictionRatio','summaryMinutes','wpm','weights','browserNotify','model','email')) {
             if ($body.ContainsKey($k)) { $s[$k] = $body[$k] }
         }
+        if ($s.ContainsKey('summaryMinutes')) { $s.summaryMinutes = [Math]::Max(60, [int]$s.summaryMinutes) }
         if ($s.notifyTime -notmatch '^([01]\d|2[0-3]):[0-5]\d$') { return Send-Json $Ctx @{ error = 'Time must be HH:mm' } 400 }
         Save-Settings $s
         $task = $null; $taskError = $null

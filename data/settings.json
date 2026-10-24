@@ -1,29 +1,27 @@
 {
-    "days":  [
-                 "Mon",
-                 "Tue",
-                 "Wed",
-                 "Thu",
-                 "Fri",
-                 "Sat",
-                 "Sun"
-             ],
-    "model":  "",
-    "summaryMinutes":  60,
-    "fictionRatio":  0.3,
-    "wpm":  230,
-    "notifyTime":  "21:00",
-    "browserNotify":  false,
-    "email":  {
-                  "enabled":  true,
-                  "targetEmail":  "vpsapra5@gmail.com",
-                  "senderEmail":  "vpsapra5@gmail.com",
-                  "service":  "gmail",
-                  "appPassword":  "kadi sljp ikrd ehvb",
-                  "resendApiKey":  "",
-                  "includeFullSummary":  false
-              },
-    "weights":  {
-
-                }
+  "notifyTime": "21:00",
+  "days": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ],
+  "fictionRatio": 0.3,
+  "summaryMinutes": 60,
+  "wpm": 230,
+  "weights": {},
+  "browserNotify": false,
+  "model": "",
+  "email": {
+    "enabled": true,
+    "targetEmail": "vpsapra5@gmail.com",
+    "senderEmail": "vpsapra5@gmail.com",
+    "service": "gmail",
+    "appPassword": "kadi sljp ikrd ehvb",
+    "resendApiKey": "",
+    "includeFullSummary": false
+  }
 }

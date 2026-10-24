@@ -1,6 +1,6 @@
 /**
  * DailyRead - Cloud & Local Node.js Server
- * 30-minute daily book summaries, Kindle reader, and automated 9:00 PM email delivery.
+ * 1-hour daily book summaries, Kindle reader, and automated 9:00 PM email delivery.
  */
 const express = require('express');
 const fs = require('fs');
@@ -116,6 +116,7 @@ function getSettings() {
   const saved = readJson(SETTINGS_PATH, {});
   const merged = { ...defaults, ...saved };
   if (!merged.email) merged.email = defaults.email;
+  merged.summaryMinutes = Math.max(60, Number(merged.summaryMinutes) || 60);
   return merged;
 }
 
@@ -304,10 +305,10 @@ function getSummaryMeta(bookId) {
     try {
       const md = fs.readFileSync(mdPath, 'utf-8');
       const words = md.split(/\s+/).filter(Boolean).length;
-      return { words, minutes: Math.round(words / 230) || 30, model: 'gemini' };
+      return { words, minutes: Math.max(60, Math.round(words / 230)) || 60, model: 'gemini' };
     } catch (e) { }
   }
-  return { words: 6500, minutes: 30, model: 'gemini' };
+  return { words: 14000, minutes: 60, model: 'gemini' };
 }
 
 function getSummaryStatus(bookId) {
@@ -338,13 +339,16 @@ async function generateSummary(bookId) {
 
   const preferredModel = process.env.GEMINI_MODEL || getSettings().model || 'gemini-3.8-flash';
   const modelList = [preferredModel, ...GEMINI_MODELS.filter(m => m !== preferredModel)];
+  const settings = getSettings();
+  const summaryMinutes = Math.max(60, Number(settings.summaryMinutes) || 60);
+  const targetWords = Math.max(14000, Math.round(summaryMinutes * 230));
 
   const prompt = `You are a world-class literary analyst, philosopher, and executive educator. 
-Create an exhaustive, highly structured, masterclass 60-minute (1-hour) deep book summary for:
+Create an exhaustive, highly structured, masterclass ${summaryMinutes}-minute (at least 1-hour) deep book summary for:
 "${book.title}" by ${book.author} (Category: ${book.catName}).
 
 CRITICAL LENGTH REQUIREMENT:
-At 230 words per minute, a true 60-minute deep read requires at least 14,000 words. You MUST write in exhaustive, granular, unhurried detail across all sections with complete case studies, multi-page chapter breakdowns, and concrete mechanisms. Do not summarize superficially.
+At 230 words per minute, a true ${summaryMinutes}-minute deep read requires at least ${targetWords} words (minimum 14,000 words). You MUST write in exhaustive, granular, unhurried detail across all sections with complete case studies, multi-page chapter breakdowns, and concrete mechanisms. Do not summarize superficially.
 
 Structure your summary in pristine Markdown with:
 # ${book.title}
@@ -451,7 +455,7 @@ Structure your summary in pristine Markdown with:
 }
 
 // HTML Email Builder
-function buildEmailHtml(book, phoneUrl, minutes = 30) {
+function buildEmailHtml(book, phoneUrl, minutes = 60) {
   const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   return `<!DOCTYPE html>
 <html>
@@ -508,7 +512,7 @@ function buildEmailHtml(book, phoneUrl, minutes = 30) {
           </tr>
           <tr>
             <td style='padding: 24px 32px; background: #0c1220; border-top: 1px solid #1e293b; text-align: center; color: #64748b; font-size: 13px;'>
-              <p style='margin: 0 0 6px 0;'>DailyRead 9:00 PM Edition • One great book, every day, in 30 minutes</p>
+              <p style='margin: 0 0 6px 0;'>DailyRead 9:00 PM Edition • One great book, every day, in 1 hour (60 minutes)</p>
             </td>
           </tr>
         </table>
@@ -568,10 +572,10 @@ function getStats() {
 
   const recent = [];
   finishedKeys.forEach(id => {
-    const f = typeof finished[id] === 'object' ? finished[id] : { date: getDateKey(), finishedAt: new Date().toISOString(), minutes: 30 };
+    const f = typeof finished[id] === 'object' ? finished[id] : { date: getDateKey(), finishedAt: new Date().toISOString(), minutes: 60 };
     const dKey = f.date || getDateKey();
     dates[dKey] = (dates[dKey] || 0) + 1;
-    totalMinutes += (Number(f.minutes) || 30);
+    totalMinutes += (Number(f.minutes) || 60);
     const b = byId[id] || getBookById(id);
     if (b) {
       const dom = b.domain || 'mind';
@@ -579,7 +583,7 @@ function getStats() {
       recent.push({
         book: b,
         date: dKey,
-        minutes: f.minutes || 30,
+        minutes: f.minutes || 60,
         finishedAt: f.finishedAt || new Date().toISOString()
       });
     }
@@ -787,26 +791,26 @@ app.get('/api/history', (req, res) => {
 });
 
 app.post('/api/finish', (req, res) => {
-  const { bookId, minutes = 30 } = req.body;
+  const { bookId, minutes = 60 } = req.body;
   const history = getHistory();
   if (!history.finished) history.finished = {};
   history.finished[bookId] = {
     date: getDateKey(),
     finishedAt: new Date().toISOString(),
-    minutes: Number(minutes) || 30
+    minutes: Math.max(60, Number(minutes) || 60)
   };
   writeJson(HISTORY_PATH, history);
   res.json({ ok: true, stats: getStats() });
 });
 
 app.post('/api/history/finish', (req, res) => {
-  const { bookId, minutes = 30 } = req.body;
+  const { bookId, minutes = 60 } = req.body;
   const history = getHistory();
   if (!history.finished) history.finished = {};
   history.finished[bookId] = {
     date: getDateKey(),
     finishedAt: new Date().toISOString(),
-    minutes: Number(minutes) || 30
+    minutes: Math.max(60, Number(minutes) || 60)
   };
   writeJson(HISTORY_PATH, history);
   res.json({ ok: true, stats: getStats() });
@@ -886,8 +890,8 @@ app.get('/api/archive', (req, res) => {
       finishedDate: fObj ? (fObj.date || dateKey) : null,
       summary: {
         ready: fs.existsSync(getSummaryPath(b.id)),
-        words: meta.words || 6500,
-        minutes: meta.minutes || 30,
+        words: meta.words || 14000,
+        minutes: meta.minutes || 60,
         model: meta.model || 'gemini'
       }
     });
@@ -909,8 +913,8 @@ app.get('/api/archive', (req, res) => {
         finishedDate: null,
         summary: {
           ready: fs.existsSync(getSummaryPath(b.id)),
-          words: meta.words || 6500,
-          minutes: meta.minutes || 30,
+          words: meta.words || 14000,
+          minutes: meta.minutes || 60,
           model: meta.model || 'gemini'
         }
       });
@@ -942,6 +946,9 @@ app.get('/api/settings', (req, res) => {
 app.post('/api/settings', (req, res) => {
   const cur = getSettings();
   const updated = { ...cur, ...req.body };
+  if (updated.summaryMinutes !== undefined) {
+    updated.summaryMinutes = Math.max(60, Number(updated.summaryMinutes) || 60);
+  }
   writeJson(SETTINGS_PATH, updated);
   res.json({ settings: updated, task: { registered: true, state: 'Cloud Active' }, hasKey: Boolean(process.env.GEMINI_API_KEY) });
 });

@@ -226,10 +226,16 @@ function Get-Settings {
     foreach ($k in @($saved.Keys)) { if ($null -ne $saved[$k]) { $s[$k] = $saved[$k] } }
     if (-not ($s.weights -is [System.Collections.IDictionary])) { $s.weights = @{} }
     if (-not ($s.email -is [System.Collections.IDictionary]))   { $s.email = (Get-DefaultSettings).email }
+    if (-not $s.summaryMinutes -or [int]$s.summaryMinutes -lt 60) { $s.summaryMinutes = 60 }
     return $s
 }
 
-function Save-Settings($Settings) { Save-Json $script:SettingsPath $Settings }
+function Save-Settings($Settings) {
+    if ($Settings.ContainsKey('summaryMinutes')) {
+        $Settings.summaryMinutes = [Math]::Max(60, [int]$Settings.summaryMinutes)
+    }
+    Save-Json $script:SettingsPath $Settings
+}
 
 function Get-CategoryWeight($Settings, [string]$CatId) {
     $w = $Settings.weights[$CatId]
@@ -360,6 +366,11 @@ function Set-Queue([string]$BookId, [string]$Action = 'add') {
 
 function Complete-Book([string]$BookId, [int]$Minutes = 0) {
     $h = Get-History
+    if ($Minutes -le 0) {
+        $meta = Read-Json (Join-Path $script:SummaryDir "$BookId.json") @{}
+        $Minutes = if ($meta.minutes) { [int]$meta.minutes } else { [int](Get-Settings).summaryMinutes }
+    }
+    if ($Minutes -lt 60) { $Minutes = 60 }
     $h.finished[$BookId] = @{ date = (Get-DateKey); minutes = $Minutes; finishedAt = (Get-Date).ToString('o') }
     $h.progress[$BookId] = 1
     if ($h.queue -contains $BookId) { $h.queue.Remove($BookId) }
@@ -383,11 +394,13 @@ function Get-Stats {
     foreach ($id in $h.finished.Keys) {
         $f = $h.finished[$id]
         $dates[$f.date] = 1 + [int]$dates[$f.date]
-        $minutes += [int]$f.minutes
+        $fMins = if ($f.minutes) { [int]$f.minutes } else { 60 }
+        if ($fMins -lt 60) { $fMins = 60 }
+        $minutes += $fMins
         $b = $byId[$id]
         if ($b) {
             $domainDone[$b.domain] = 1 + [int]$domainDone[$b.domain]
-            [void]$recent.Add(@{ book = $b; date = $f.date; minutes = $f.minutes; finishedAt = $f.finishedAt })
+            [void]$recent.Add(@{ book = $b; date = $f.date; minutes = $fMins; finishedAt = $f.finishedAt })
         }
     }
     # current streak
@@ -490,9 +503,10 @@ function Clear-ModelText([string]$Text) {
 
 function Get-SummaryPrompts($Book) {
     $s = Get-Settings
-    $scale = [double]$s.summaryMinutes / 60.0
+    $mins = [Math]::Max(60, [int]$s.summaryMinutes)
+    $scale = [double]$mins / 60.0
     $w = @{}
-    foreach ($pair in @(@('idea',400), @('author',800), @('breakdown',8500), @('ideas',3000), @('crit',800))) {
+    foreach ($pair in @(@('idea',500), @('author',800), @('breakdown',8500), @('ideas',3000), @('crit',800))) {
         $w[$pair[0]] = [int]([Math]::Round(($pair[1] * $scale) / 50.0) * 50)
     }
     $kind = $(if ($Book.fiction) { 'fiction' } else { 'non-fiction' })
@@ -525,7 +539,7 @@ Writing rules:
 "@
 
     $partA = @"
-You are a world-class editor writing a premium book summary for a daily reading app. The full summary is read in about $($s.summaryMinutes) minutes. You are writing PART 1 of 2.
+You are a world-class editor writing an exhaustive masterclass book summary for a daily reading app. The full summary is read in about $mins minutes (strictly minimum 14,000 words total for a true 1-hour read). You are writing PART 1 of 2.
 
 Book: "$($Book.title)" by $($Book.author)
 Category: $($Book.catName) ($kind)
@@ -552,7 +566,7 @@ $common
 "@
 
     $partB = @"
-You are a world-class editor writing a premium book summary for a daily reading app. You are writing PART 2 of 2 for "$($Book.title)" by $($Book.author) ($kind, $($Book.catName)).
+You are a world-class editor writing an exhaustive masterclass book summary for a daily reading app. You are writing PART 2 of 2 for "$($Book.title)" by $($Book.author) ($kind, $($Book.catName)).
 Part 1 (title, big idea, author context, and detailed breakdown) is already written. Write ONLY the sections below, starting directly with the first heading.
 
 ## 10 Key Ideas
@@ -603,7 +617,8 @@ function New-Summary {
         $md = (Clear-ModelText $a.text) + "`n`n" + (Clear-ModelText $b.text) + "`n"
         Write-TextFile $path $md
         $words = ($md -split '\s+' | Where-Object { $_ }).Count
-        Save-Json (Join-Path $script:SummaryDir "$BookId.json") @{ generatedAt = (Get-Date).ToString('o'); model = $a.model; words = $words; minutes = (Get-Settings).summaryMinutes }
+        $mins = [Math]::Max(60, [int](Get-Settings).summaryMinutes)
+        Save-Json (Join-Path $script:SummaryDir "$BookId.json") @{ generatedAt = (Get-Date).ToString('o'); model = $a.model; words = $words; minutes = $mins }
         return $path
     } catch {
         Write-TextFile $err $_.Exception.Message
@@ -905,7 +920,7 @@ function Build-EmailHtml {
           <!-- Footer -->
           <tr>
             <td style='padding: 24px 32px; background: #0c1220; border-top: 1px solid #1e293b; text-align: center; color: #64748b; font-size: 13px;'>
-              <p style='margin: 0 0 6px 0;'>DailyRead 9:00 PM Edition &bull; One great book, every day, in 30 minutes</p>
+              <p style='margin: 0 0 6px 0;'>DailyRead 9:00 PM Edition &bull; One great book, every day, in 1 hour (60 minutes)</p>
             </td>
           </tr>
         </table>
@@ -939,7 +954,7 @@ function Send-DailyEmail {
     
     $ip = Get-LocalIp
     $phoneUrl = "http://${ip}:$($script:Port)/#/read/$($Book.id)"
-    $mins = if ($s.summaryMinutes) { $s.summaryMinutes } else { 60 }
+    $mins = if ($s.summaryMinutes) { [Math]::Max(60, [int]$s.summaryMinutes) } else { 60 }
     
     $p = Get-SummaryPath $Book.id
     $md = ''
@@ -950,7 +965,7 @@ function Send-DailyEmail {
         if ($md) { $summaryHtml = Convert-MarkdownToHtmlEmail $md }
     }
     
-    $subject = [string]::Format([System.Globalization.CultureInfo]::InvariantCulture, [char]0xD83D + [char]0xDCDA + " Tonight's 30-Min Read: {0} by {1}", $Book.title, $Book.author)
+    $subject = [string]::Format([System.Globalization.CultureInfo]::InvariantCulture, [char]0xD83D + [char]0xDCDA + " Tonight's 1-Hour Read: {0} by {1}", $Book.title, $Book.author)
     $htmlBody = Build-EmailHtml -Book $Book -PhoneUrl $phoneUrl -Minutes $mins -SummaryHtml $summaryHtml
     
     if ($service -eq 'resend' -or ($resendKey -and -not $appPass)) {

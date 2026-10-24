@@ -632,10 +632,11 @@
                 const firstHeading = md.split('\n')[0].replace(/^#\s*/, '').trim();
                 bookMeta = { id: bookId, title: firstHeading || bookId, author: 'Author' };
               }
+              const wCount = md.split(/\s+/).filter(Boolean).length;
               res = {
                 book: bookMeta,
                 markdown: md,
-                meta: { words: md.split(/\s+/).length, minutes: 30, model: 'gemini' },
+                meta: { words: wCount, minutes: Math.max(60, Math.round(wCount / 230)) || 60, model: 'gemini' },
                 status: { bookId, generated: true, hasFile: true }
               };
             }
@@ -884,7 +885,8 @@
     if (pctEl) pctEl.textContent = `${pct}%`;
 
     const timeLeftEl = document.getElementById('kindle-time-left');
-    const minsRemaining = Math.max(1, Math.round(30 * (1 - (state.currentPage / state.totalPages))));
+    const totalMins = (state.activeSummaryMeta && state.activeSummaryMeta.minutes) ? state.activeSummaryMeta.minutes : 60;
+    const minsRemaining = Math.max(1, Math.round(totalMins * (1 - (state.currentPage / state.totalPages))));
     if (timeLeftEl) timeLeftEl.textContent = `⏱️ ${minsRemaining}m left`;
 
     // Zen Mini Indicator
@@ -1111,8 +1113,8 @@
         tagDisplay = 'Library';
       }
 
-      const words = item.summary && item.summary.words ? item.summary.words : 6500;
-      const mins = item.summary && item.summary.minutes ? item.summary.minutes : 30;
+      const words = item.summary && item.summary.words ? item.summary.words : 14000;
+      const mins = item.summary && item.summary.minutes ? item.summary.minutes : 60;
 
       return `
         <div class="archive-item-card ${isCompleted ? 'is-completed' : 'is-pending'}" data-book-id="${b.id}">
@@ -1185,7 +1187,7 @@
         await api('/api/unfinish', { method: 'POST', body: JSON.stringify({ bookId }) });
         showToast('Book unmarked as completed.', 'info');
       } else {
-        await api('/api/finish', { method: 'POST', body: JSON.stringify({ bookId, minutes: 30 }) });
+        await api('/api/finish', { method: 'POST', body: JSON.stringify({ bookId, minutes: 60 }) });
         showToast('Book marked as completed! Streak compounded! 🔥', 'success');
         updateStreakDisplay();
       }
@@ -2141,7 +2143,8 @@
       const fill = document.getElementById('reader-progress-fill');
       if (fill) fill.style.width = `${progress * 100}%`;
 
-      const estMins = Math.max(1, Math.round(30 * (1 - progress)));
+      const totalMins = (state.activeSummaryMeta && state.activeSummaryMeta.minutes) ? state.activeSummaryMeta.minutes : 60;
+      const estMins = Math.max(1, Math.round(totalMins * (1 - progress)));
       const timeRemaining = document.getElementById('reader-time-remaining');
       if (timeRemaining) timeRemaining.textContent = `⏱️ ${estMins} min left`;
     });
@@ -2150,7 +2153,8 @@
     document.getElementById('reader-complete-btn').addEventListener('click', async () => {
       if (!state.activeSummaryId) return;
       try {
-        await api('/api/finish', { method: 'POST', body: JSON.stringify({ bookId: state.activeSummaryId, minutes: 30 }) });
+        const finishedMins = (state.activeSummaryMeta && state.activeSummaryMeta.minutes) ? state.activeSummaryMeta.minutes : 60;
+        await api('/api/finish', { method: 'POST', body: JSON.stringify({ bookId: state.activeSummaryId, minutes: finishedMins }) });
         showToast('Book marked as finished! Streak compounded! 🔥', 'success');
         updateStreakDisplay();
       } catch (e) { }
