@@ -441,6 +441,7 @@
       window.location.hash = targetHash;
     }
   }
+  window.navigateTo = navigateTo;
 
   function handleRoute() {
     const hash = window.location.hash || '#/today';
@@ -612,10 +613,41 @@
     `;
 
     try {
-      const res = await api(`/api/summary/${bookId}`);
-      state.activeSummaryMeta = res.meta;
+      let res = null;
+      try {
+        res = await api(`/api/summary/${bookId}`);
+      } catch (apiErr) {
+        console.warn('Backend API summary fetch failed, checking static CDN...', apiErr);
+      }
 
-      if (!res.markdown) {
+      // Static CDN fallback if backend response is missing or ungenerated
+      if (!res || !res.markdown) {
+        try {
+          const staticRes = await fetch(`/summaries/${bookId}.md`);
+          if (staticRes.ok) {
+            const md = await staticRes.text();
+            if (md && md.trim().startsWith('#')) {
+              let bookMeta = (res && res.book) || state.books.find(b => b.id === bookId);
+              if (!bookMeta) {
+                const firstHeading = md.split('\n')[0].replace(/^#\s*/, '').trim();
+                bookMeta = { id: bookId, title: firstHeading || bookId, author: 'Author' };
+              }
+              res = {
+                book: bookMeta,
+                markdown: md,
+                meta: { words: md.split(/\s+/).length, minutes: 30, model: 'gemini' },
+                status: { bookId, generated: true, hasFile: true }
+              };
+            }
+          }
+        } catch (staticErr) {
+          console.warn('Static CDN fetch error:', staticErr);
+        }
+      }
+
+      state.activeSummaryMeta = res ? res.meta : null;
+
+      if (!res || !res.markdown) {
         const isGenerating = res.status && res.status.generating;
         article.innerHTML = `
           <div style="text-align: center; padding: 4rem 1rem;">
@@ -1562,7 +1594,7 @@
           : `<span class="badge-status-ready">📖 30-Min Summary Ready</span>`;
 
         return `
-          <div class="course-book-row-card ${isFinished ? 'is-completed' : ''}" onclick="navigateTo('read/${b.bookId}')">
+          <div class="course-book-row-card ${isFinished ? 'is-completed' : ''}" data-book-id="${b.bookId}" onclick="window.DailyRead.navigateTo('read/${b.bookId}')">
             <!-- Left: Styled Mini Cover -->
             <div class="course-book-cover-wrap" style="background: ${domainStyle.grad};">
               <span class="course-cover-icon">${domainStyle.icon || '📖'}</span>
@@ -1587,7 +1619,7 @@
 
             <!-- Right: Action Button -->
             <div class="course-book-action">
-              <button class="btn ${isFinished ? 'btn-secondary' : 'btn-primary'}" onclick="event.stopPropagation(); navigateTo('read/${b.bookId}')">
+              <button class="btn ${isFinished ? 'btn-secondary' : 'btn-primary'} course-read-btn" data-book-id="${b.bookId}" onclick="event.stopPropagation(); window.DailyRead.navigateTo('read/${b.bookId}')">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <span>${isFinished ? 'Re-read Summary' : 'Read 30-Min Summary'}</span>
               </button>
@@ -1646,6 +1678,22 @@
       `;
     }).join('');
   }
+
+    // Bind direct DOM click events for 100% reliable navigation
+    listEl.querySelectorAll('.course-book-row-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const bId = card.getAttribute('data-book-id');
+        if (bId) navigateTo(`read/${bId}`);
+      });
+    });
+
+    listEl.querySelectorAll('.course-read-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const bId = btn.getAttribute('data-book-id');
+        if (bId) navigateTo(`read/${bId}`);
+      });
+    });
 
   // --------------------------------------------------------------------------
   // Event Bindings
@@ -2309,6 +2357,8 @@
   // Global Exposure for Inline Handlers
   // --------------------------------------------------------------------------
   window.DailyRead = {
+    navigateTo: (route) => navigateTo(route),
+    loadCoursesCatalog: () => loadCoursesCatalog(),
     setTodayBook: async (bookId) => {
       showToast('Setting as today\'s book...', 'info');
       await api('/api/today/pick', { method: 'POST', body: JSON.stringify({ bookId }) });

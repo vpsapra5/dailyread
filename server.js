@@ -201,7 +201,12 @@ const DEFAULT_DAYS = {
   '2026-10-18': { assignedAt: '2026-10-18T21:00:00.000Z', bookId: 'dune', skipped: [] },
   '2026-10-19': { assignedAt: '2026-10-19T21:00:00.000Z', bookId: 'crucial-conversations', skipped: [] },
   '2026-10-21': { assignedAt: '2026-10-21T01:00:00.000Z', bookId: 'project-hail-mary', skipped: [] },
-  '2026-10-22': { assignedAt: '2026-10-22T01:00:00.000Z', bookId: 'crime-and-punishment', skipped: [] }
+  '2026-10-22': { assignedAt: '2026-10-22T01:00:00.000Z', bookId: 'crime-and-punishment', skipped: [] },
+  '2026-10-23': { assignedAt: '2026-10-23T01:00:00.000Z', bookId: 'leaves-of-grass', skipped: [] },
+  '2026-10-24': { assignedAt: '2026-10-24T01:00:00.000Z', bookId: 'cosmos', skipped: [] },
+  '2026-10-25': { assignedAt: '2026-10-25T01:00:00.000Z', bookId: 'the-analects', skipped: [] },
+  '2026-10-26': { assignedAt: '2026-10-26T01:00:00.000Z', bookId: 'meditations-on-moloch', skipped: [] },
+  '2026-10-27': { assignedAt: '2026-10-27T01:00:00.000Z', bookId: 'zero-to-one', skipped: [] }
 };
 
 function getHistory() {
@@ -251,10 +256,12 @@ function selectNextBook(history, forDate, exclude = []) {
 
   const available = books.filter(b => !used.has(b.id) && !finished[b.id] && !exclude.includes(b.id));
   if (available.length > 0) {
+    const availableWithSummary = available.filter(b => fs.existsSync(getSummaryPath(b.id)));
+    const candidates = availableWithSummary.length > 0 ? availableWithSummary : available;
     let hash = 0;
     for (let i = 0; i < forDate.length; i++) hash = (hash * 31 + forDate.charCodeAt(i)) & 0xffffffff;
-    const index = Math.abs(hash) % available.length;
-    return available[index];
+    const index = Math.abs(hash) % candidates.length;
+    return candidates[index];
   }
 
   return books[0] || getBookById('project-hail-mary');
@@ -280,6 +287,8 @@ function getDayEntry(dateKey = getDateKey()) {
 function getSummaryPath(bookId) {
   const p1 = path.join(SUMMARIES_DIR, `${bookId}.md`);
   if (fs.existsSync(p1)) return p1;
+  const pPub = path.join(__dirname, 'public', 'summaries', `${bookId}.md`);
+  if (fs.existsSync(pPub)) return pPub;
   const pTmp = path.join('/tmp', `${bookId}.md`);
   if (fs.existsSync(pTmp)) return pTmp;
   return p1;
