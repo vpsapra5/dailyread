@@ -1557,6 +1557,7 @@
 
     try {
       const data = await api('/api/courses');
+      state.coursesData = data;
       renderCoursesCatalog(data);
     } catch (err) {
       if (listEl) {
@@ -1564,7 +1565,7 @@
           <div class="empty-state-card">
             <h3>Could not load courses</h3>
             <p>${escapeHtml(err.message || 'Server error')}</p>
-            <button class="btn btn-secondary" onclick="loadCoursesCatalog()">Retry</button>
+            <button class="btn btn-secondary" onclick="window.DailyRead.loadCoursesCatalog()">Retry</button>
           </div>
         `;
       }
@@ -1580,108 +1581,171 @@
       return;
     }
 
-    listEl.innerHTML = courses.map(course => {
-      const books = course.books || [];
-      const totalBooks = books.length || 6;
-      const completedCount = books.filter(b => b.isFinished).length;
-      const percent = totalBooks > 0 ? Math.round((completedCount / totalBooks) * 100) : 0;
-      const isComplete = completedCount >= totalBooks;
+    if (!state.selectedCourseId || !courses.find(c => c.id === state.selectedCourseId)) {
+      state.selectedCourseId = courses[0].id;
+    }
 
-      const booksHtml = books.map(b => {
-        const domainStyle = DOMAIN_STYLES[b.domain] || DOMAIN_STYLES.mind;
-        const isFinished = Boolean(b.isFinished);
-        const statusBadge = isFinished 
-          ? `<span class="badge-status-completed">✓ Finished</span>`
-          : `<span class="badge-status-ready">📖 30-Min Summary Ready</span>`;
+    const selectedCourse = courses.find(c => c.id === state.selectedCourseId) || courses[0];
+    const totalCourses = courses.length;
 
-        return `
-          <div class="course-book-row-card ${isFinished ? 'is-completed' : ''}" data-book-id="${b.bookId}" onclick="window.DailyRead.navigateTo('read/${b.bookId}')">
-            <!-- Left: Styled Mini Cover -->
-            <div class="course-book-cover-wrap" style="background: ${domainStyle.grad};">
-              <span class="course-cover-icon">${domainStyle.icon || '📖'}</span>
-              <div class="course-cover-info">
-                <div class="course-cover-title">${escapeHtml(b.title)}</div>
-                <div class="course-cover-author">${escapeHtml(b.author)}</div>
-              </div>
-            </div>
-
-            <!-- Middle: Content & Framework Info -->
-            <div class="course-book-details">
-              <div class="course-book-header-line">
-                <span class="course-topic-pill">Module ${b.number}: ${escapeHtml(b.topic)}</span>
-                ${statusBadge}
-              </div>
-              <h3 class="course-book-title">${escapeHtml(b.title)}</h3>
-              <div class="course-book-author-text">by ${escapeHtml(b.author)}</div>
-              <div class="course-book-takeaway">
-                <strong>Core Takeaway:</strong> ${escapeHtml(b.keyTakeaway)}
-              </div>
-            </div>
-
-            <!-- Right: Action Button -->
-            <div class="course-book-action">
-              <button class="btn ${isFinished ? 'btn-secondary' : 'btn-primary'} course-read-btn" data-book-id="${b.bookId}" onclick="event.stopPropagation(); window.DailyRead.navigateTo('read/${b.bookId}')">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                <span>${isFinished ? 'Re-read Summary' : 'Read 30-Min Summary'}</span>
-              </button>
-            </div>
+    // 1. Course Selection Deck
+    const selectorHtml = `
+      <div class="course-selection-panel">
+        <div class="course-selection-header-row">
+          <div>
+            <div class="course-selection-label">🎯 CURRICULUM SELECTOR</div>
+            <h2 class="course-selection-title">Choose Your Course</h2>
+            <p class="course-selection-subtitle">Select a course track below to view its syllabus, readings, and progress</p>
           </div>
-        `;
-      }).join('');
+          <div class="course-selector-badge-pill">${totalCourses} ${totalCourses === 1 ? 'Course' : 'Courses'} Available</div>
+        </div>
+
+        <div class="course-picker-grid">
+          ${courses.map(c => {
+            const isSelected = c.id === selectedCourse.id;
+            return `
+              <div class="course-select-card ${isSelected ? 'is-selected' : ''}" data-course-id="${c.id}" role="button" tabindex="0" title="Click to select ${escapeHtml(c.title)}">
+                <div class="course-select-icon">${c.icon || '👑'}</div>
+                <div class="course-select-content">
+                  <div class="course-select-top-line">
+                    <span class="course-select-code">${escapeHtml(c.code || 'CURRICULUM')}</span>
+                    ${isSelected 
+                      ? '<span class="course-select-status status-active">✓ Selected Course</span>' 
+                      : '<span class="course-select-status status-available">Click to Select</span>'}
+                  </div>
+                  <h3 class="course-select-title">${escapeHtml(c.title)}</h3>
+                  <p class="course-select-tagline">${escapeHtml(c.tagline || c.description || '')}</p>
+                  <div class="course-select-meta">
+                    <span>⏱️ ${escapeHtml(c.duration || '6 Summaries • 30 Mins Each')}</span>
+                    <span>•</span>
+                    <span>${c.completedCount || 0} of ${c.totalBooks || 6} Finished (${c.percentComplete || 0}%)</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    // 2. Active Selected Course Syllabus
+    const books = selectedCourse.books || [];
+    const totalBooks = books.length || 6;
+    const completedCount = books.filter(b => b.isFinished).length;
+    const percent = totalBooks > 0 ? Math.round((completedCount / totalBooks) * 100) : 0;
+    const isComplete = completedCount >= totalBooks;
+
+    const booksHtml = books.map(b => {
+      const domainStyle = DOMAIN_STYLES[b.domain] || DOMAIN_STYLES.mind;
+      const isFinished = Boolean(b.isFinished);
+      const statusBadge = isFinished 
+        ? `<span class="badge-status-completed">✓ Finished</span>`
+        : `<span class="badge-status-ready">📖 30-Min Summary Ready</span>`;
 
       return `
-        <div class="course-flagship-card" style="border-top: 4px solid ${course.accentColor || '#8c1515'};">
-          <div class="course-flagship-header">
-            <div class="course-institution-tag">
-              <span class="inst-icon">${course.icon || '🏛️'}</span>
-              <span>${escapeHtml(course.institution || 'Stanford University Seminar')}</span>
-              <span class="inst-code">${escapeHtml(course.code || 'STANFORD-PWR-101')}</span>
-            </div>
-
-            <h2 class="course-hero-title">${escapeHtml(course.title)}</h2>
-            <div class="course-hero-tagline">${escapeHtml(course.tagline || '')}</div>
-            <p class="course-hero-desc">${escapeHtml(course.description || '')}</p>
-
-            <div class="course-meta-tags-row">
-              <span class="meta-tag">⏱️ ${escapeHtml(course.duration || '6 Summaries • 30 Mins Each')}</span>
-              <span class="meta-tag">🎯 ${escapeHtml(course.level || 'Advanced Strategic Theory')}</span>
-              <span class="meta-tag">👥 ${escapeHtml(course.instructor || 'Stanford Political Economy Group')}</span>
-              <span class="meta-tag meta-tag-highlight">📖 Full 30-Minute DailyRead Summaries</span>
+        <div class="course-book-row-card ${isFinished ? 'is-completed' : ''}" data-book-id="${b.bookId}">
+          <!-- Left: Styled Mini Cover -->
+          <div class="course-book-cover-wrap" style="background: ${domainStyle.grad};">
+            <span class="course-cover-icon">${domainStyle.icon || '📖'}</span>
+            <div class="course-cover-info">
+              <div class="course-cover-title">${escapeHtml(b.title)}</div>
+              <div class="course-cover-author">${escapeHtml(b.author)}</div>
             </div>
           </div>
 
-          <!-- Progress Ribbon -->
-          <div class="course-progress-ribbon">
-            <div class="progress-ribbon-left">
-              <div class="progress-metric-label">
-                ${isComplete 
-                  ? '🏆 <strong>Curriculum Completed:</strong> All 6 Summaries Finished!' 
-                  : `Curriculum Progress: <strong>${completedCount} of ${totalBooks} Summaries Read (${percent}%)</strong>`
-                }
-              </div>
-              <div class="course-main-progress-track">
-                <div class="course-main-progress-fill" style="width: ${percent}%;"></div>
-              </div>
+          <!-- Middle: Content & Framework Info -->
+          <div class="course-book-details">
+            <div class="course-book-header-line">
+              <span class="course-topic-pill">Module ${b.number}: ${escapeHtml(b.topic)}</span>
+              ${statusBadge}
+            </div>
+            <h3 class="course-book-title">${escapeHtml(b.title)}</h3>
+            <div class="course-book-author-text">by ${escapeHtml(b.author)}</div>
+            <div class="course-book-takeaway">
+              <strong>Core Takeaway:</strong> ${escapeHtml(b.keyTakeaway)}
             </div>
           </div>
 
-          <!-- Course Books List -->
-          <div class="course-books-list-container">
-            <div class="syllabus-section-header">
-              <h3 class="syllabus-section-title">Required Seminar Texts & 30-Minute Breakdowns</h3>
-              <span class="syllabus-section-sub">Read any summary with Kindle-style page flipping, audio narration, and key takeaways</span>
-            </div>
-            <div class="course-books-stack">
-              ${booksHtml}
-            </div>
+          <!-- Right: Action Button -->
+          <div class="course-book-action">
+            <button class="btn ${isFinished ? 'btn-secondary' : 'btn-primary'} course-read-btn" data-book-id="${b.bookId}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>${isFinished ? 'Re-read Summary' : 'Read 30-Min Summary'}</span>
+            </button>
           </div>
         </div>
       `;
     }).join('');
 
-    // Bind direct DOM click events for 100% reliable navigation
+    const courseHtml = `
+      <div class="course-flagship-card" style="border-top: 4px solid ${selectedCourse.accentColor || '#8c1515'};">
+        <div class="course-flagship-header">
+          <div class="course-institution-tag">
+            <span class="inst-icon">${selectedCourse.icon || '👑'}</span>
+            <span>${escapeHtml(selectedCourse.institution || 'Executive Seminar Series')}</span>
+            <span class="inst-code">${escapeHtml(selectedCourse.code || 'CURRICULUM-01')}</span>
+          </div>
+
+          <h2 class="course-hero-title">${escapeHtml(selectedCourse.title)}</h2>
+          <div class="course-hero-tagline">${escapeHtml(selectedCourse.tagline || '')}</div>
+          <p class="course-hero-desc">${escapeHtml(selectedCourse.description || '')}</p>
+
+          <div class="course-meta-tags-row">
+            <span class="meta-tag">⏱️ ${escapeHtml(selectedCourse.duration || '6 Summaries • 30 Mins Each')}</span>
+            <span class="meta-tag">🎯 ${escapeHtml(selectedCourse.level || 'Advanced Strategic Theory')}</span>
+            <span class="meta-tag">👥 ${escapeHtml(selectedCourse.instructor || 'Strategic Economics & Power Group')}</span>
+            <span class="meta-tag meta-tag-highlight">📖 Full 30-Minute DailyRead Summaries</span>
+          </div>
+        </div>
+
+        <!-- Progress Ribbon -->
+        <div class="course-progress-ribbon">
+          <div class="progress-ribbon-left">
+            <div class="progress-metric-label">
+              ${isComplete 
+                ? '🏆 <strong>Curriculum Completed:</strong> All 6 Summaries Finished!' 
+                : `Curriculum Progress: <strong>${completedCount} of ${totalBooks} Summaries Read (${percent}%)</strong>`
+              }
+            </div>
+            <div class="course-main-progress-track">
+              <div class="course-main-progress-fill" style="width: ${percent}%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Books List -->
+        <div class="course-books-list-container">
+          <div class="syllabus-section-header">
+            <h3 class="syllabus-section-title">Required Seminar Texts & 30-Minute Breakdowns</h3>
+            <span class="syllabus-section-sub">Read any summary with Kindle-style page flipping, audio narration, and key takeaways</span>
+          </div>
+          <div class="course-books-stack">
+            ${booksHtml}
+          </div>
+        </div>
+      </div>
+    `;
+
+    listEl.innerHTML = selectorHtml + courseHtml;
+
+    // Attach event listeners for course selector cards
+    listEl.querySelectorAll('.course-select-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const cId = card.getAttribute('data-course-id');
+        if (cId) window.DailyRead.selectCourse(cId);
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const cId = card.getAttribute('data-course-id');
+          if (cId) window.DailyRead.selectCourse(cId);
+        }
+      });
+    });
+
+    // Attach event listeners for book cards and buttons
     listEl.querySelectorAll('.course-book-row-card').forEach(card => {
-      card.addEventListener('click', (e) => {
+      card.addEventListener('click', () => {
         const bId = card.getAttribute('data-book-id');
         if (bId) navigateTo(`read/${bId}`);
       });
@@ -2360,6 +2424,12 @@
   window.DailyRead = {
     navigateTo: (route) => navigateTo(route),
     loadCoursesCatalog: () => loadCoursesCatalog(),
+    selectCourse: (courseId) => {
+      state.selectedCourseId = courseId;
+      if (state.coursesData) {
+        renderCoursesCatalog(state.coursesData);
+      }
+    },
     setTodayBook: async (bookId) => {
       showToast('Setting as today\'s book...', 'info');
       await api('/api/today/pick', { method: 'POST', body: JSON.stringify({ bookId }) });
