@@ -1,6 +1,7 @@
 {
-    "minutes":  30,
-    "generatedAt":  "2026-10-21T02:07:55.5078688-04:00",
-    "model":  "gemini-3.8-flash",
-    "words":  7530
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:43:13.447Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 14065
 }

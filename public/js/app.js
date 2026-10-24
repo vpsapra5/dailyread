@@ -552,8 +552,8 @@
       }, 4000);
     } else if (status.generated) {
       banner.className = 'status-banner ready';
-      bannerText.textContent = `Full 30-minute summary is ready for reading & listening.`;
-      startBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Start 30-Min Read`;
+      bannerText.textContent = `Full 1-hour summary is ready for reading & listening.`;
+      startBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Start 1-Hour Read`;
       startBtn.disabled = false;
     } else if (status.error) {
       banner.className = 'status-banner error';
@@ -656,12 +656,12 @@
               <span></span><span></span><span></span>
             </div>
             <p style="color: var(--accent-gold); font-size: 1.25rem; font-weight:700; margin-bottom:0.75rem;">
-              ${isGenerating ? 'Gemini is synthesizing this 30-min summary...' : 'Summary Not Yet Generated'}
+              ${isGenerating ? 'Gemini is synthesizing this 1-hour summary...' : 'Summary Not Yet Generated'}
             </p>
             <p style="color: var(--text-secondary); max-width:460px; margin: 0 auto 1.5rem; font-size:0.95rem; line-height:1.6;">
               ${isGenerating 
                 ? 'Synthesizing comprehensive chapter breakdowns, mental models, and action checklists for "' + escapeHtml(bookTitle) + '". It will open automatically in ~45 seconds.'
-                : 'This book is in your curriculum catalog. Tap below to generate its 30-minute synthesis using Gemini.'}
+                : 'This book is in your curriculum catalog. Tap below to generate its 1-hour synthesis using Gemini.'}
             </p>
             ${isGenerating ? '<p style="color:var(--text-muted); font-size:0.85rem;">⏳ Auto-refreshing when complete...</p>' : `<button class="btn btn-primary" onclick="window.DailyRead.triggerGenerate('${bookId}')">⚡ Generate Now (~45s)</button>`}
           </div>
@@ -1256,7 +1256,7 @@
           </div>
           <div class="card-footer">
             <span class="read-status-badge ${b.finished ? 'finished' : 'unread'}">
-              ${b.finished ? '✓ Finished' : (b.ready ? '⚡ Ready' : '30-min read')}
+              ${b.finished ? '✓ Finished' : (b.ready ? '⚡ Ready' : '1-hour read')}
             </span>
             <div style="display:flex; gap:0.35rem;" onclick="event.stopPropagation();">
               <button class="reader-tool-btn" title="Set as Today's book" onclick="window.DailyRead.setTodayBook('${b.id}')">
@@ -1487,7 +1487,7 @@
 
     // Summaries Duration & Fiction
     const durationSelect = document.getElementById('setting-summary-minutes');
-    if (durationSelect) durationSelect.value = settings.summaryMinutes || 30;
+    if (durationSelect) durationSelect.value = settings.summaryMinutes || 60;
 
     const fictionSelect = document.getElementById('setting-fiction-ratio');
     if (fictionSelect) fictionSelect.value = settings.fictionRatio !== undefined ? settings.fictionRatio : 0.3;
@@ -1616,7 +1616,7 @@
                   <h3 class="course-select-title">${escapeHtml(c.title)}</h3>
                   <p class="course-select-tagline">${escapeHtml(c.tagline || c.description || '')}</p>
                   <div class="course-select-meta">
-                    <span>⏱️ ${escapeHtml(c.duration || '6 Summaries • 30 Mins Each')}</span>
+                    <span>⏱️ ${escapeHtml(c.duration || '6 Summaries • 1 Hour Each')}</span>
                     <span>•</span>
                     <span>${c.completedCount || 0} of ${c.totalBooks || 6} Finished (${c.percentComplete || 0}%)</span>
                   </div>
@@ -1640,7 +1640,7 @@
       const isFinished = Boolean(b.isFinished);
       const statusBadge = isFinished 
         ? `<span class="badge-status-completed">✓ Finished</span>`
-        : `<span class="badge-status-ready">📖 30-Min Summary Ready</span>`;
+        : `<span class="badge-status-ready">📖 1-Hour Summary Ready</span>`;
 
       return `
         <div class="course-book-row-card ${isFinished ? 'is-completed' : ''}" data-book-id="${b.bookId}">
@@ -1670,7 +1670,7 @@
           <div class="course-book-action">
             <button class="btn ${isFinished ? 'btn-secondary' : 'btn-primary'} course-read-btn" data-book-id="${b.bookId}">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              <span>${isFinished ? 'Re-read Summary' : 'Read 30-Min Summary'}</span>
+              <span>${isFinished ? 'Re-read Summary' : 'Read 1-Hour Summary'}</span>
             </button>
           </div>
         </div>
@@ -1691,10 +1691,10 @@
           <p class="course-hero-desc">${escapeHtml(selectedCourse.description || '')}</p>
 
           <div class="course-meta-tags-row">
-            <span class="meta-tag">⏱️ ${escapeHtml(selectedCourse.duration || '6 Summaries • 30 Mins Each')}</span>
+            <span class="meta-tag">⏱️ ${escapeHtml(selectedCourse.duration || '6 Summaries • 1 Hour Each')}</span>
             <span class="meta-tag">🎯 ${escapeHtml(selectedCourse.level || 'Advanced Strategic Theory')}</span>
             <span class="meta-tag">👥 ${escapeHtml(selectedCourse.instructor || 'Strategic Economics & Power Group')}</span>
-            <span class="meta-tag meta-tag-highlight">📖 Full 30-Minute DailyRead Summaries</span>
+            <span class="meta-tag meta-tag-highlight">📖 Full 1-Hour DailyRead Summaries</span>
           </div>
         </div>
 
@@ -1716,7 +1716,7 @@
         <!-- Course Books List -->
         <div class="course-books-list-container">
           <div class="syllabus-section-header">
-            <h3 class="syllabus-section-title">Required Seminar Texts & 30-Minute Breakdowns</h3>
+            <h3 class="syllabus-section-title">Required Seminar Texts & 1-Hour Breakdowns</h3>
             <span class="syllabus-section-sub">Read any summary with Kindle-style page flipping, audio narration, and key takeaways</span>
           </div>
           <div class="course-books-stack">

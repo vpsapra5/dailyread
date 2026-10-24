@@ -1,8 +1,7 @@
 {
-  "bookId": "how-to-rule-the-world",
-  "words": 5365,
-  "minutes": 23,
-  "model": "opus-frontier-cognition",
-  "domain": "world",
-  "generatedAt": "2026-10-24T20:53:26.643Z"
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:31:34.871Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 13888
 }

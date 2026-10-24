@@ -1,8 +1,7 @@
 {
-  "bookId": "the-evolution-of-cooperation",
-  "words": 5860,
-  "minutes": 25,
-  "model": "opus-frontier-cognition",
-  "domain": "mind",
-  "generatedAt": "2026-10-24T20:48:53.335Z"
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:22:09.196Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 14028
 }

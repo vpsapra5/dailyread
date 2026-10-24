@@ -1,8 +1,7 @@
 {
-  "bookId": "zero-to-one",
-  "words": 6125,
-  "minutes": 27,
-  "model": "opus-frontier-cognition",
-  "domain": "money",
-  "generatedAt": "2026-10-24T20:50:33.888Z"
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:25:07.256Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 13998
 }

@@ -1,8 +1,7 @@
 {
-  "bookId": "the-tragedy-of-the-commons",
-  "words": 6222,
-  "minutes": 27,
-  "model": "opus-frontier-cognition",
-  "domain": "world",
-  "generatedAt": "2026-10-24T20:46:39.762Z"
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:14:54.427Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 13805
 }

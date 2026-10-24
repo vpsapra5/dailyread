@@ -7,8 +7,8 @@
   "instructor": "Strategic Economics & Power Group",
   "badge": "Core Curriculum",
   "tagline": "An Intensive 6-Book Curriculum in Power, Game Theory, Monopolies, and Institutional Dominance",
-  "description": "Six masterwork 30-minute book summaries exploring the hidden game-theoretic laws governing geopolitics, Silicon Valley monopolies, corporate boardrooms, and institutional decay.",
-  "duration": "6 Summaries • 30 Mins Each",
+  "description": "Six masterwork 1-hour book summaries exploring the hidden game-theoretic laws governing geopolitics, Silicon Valley monopolies, corporate boardrooms, and institutional decay.",
+  "duration": "6 Summaries • 1 Hour Each",
   "level": "Executive / Advanced Strategic Theory",
   "icon": "👑",
   "accentColor": "#8c1515",
@@ -23,7 +23,7 @@
       "author": "Scott Alexander (Slate Star Codex)",
       "primaryText": "\"Meditations on Moloch\" by Scott Alexander",
       "keyTakeaway": "How hyper-competition forces rational agents to sacrifice every human value for a slight competitive edge.",
-      "readingMinutes": 30,
+      "readingMinutes": 60,
       "domain": "mind",
       "icon": "🧠"
     },
@@ -35,7 +35,7 @@
       "author": "Garrett Hardin & Elinor Ostrom",
       "primaryText": "\"The Tragedy of the Commons\" by Garrett Hardin & Governing the Commons by Elinor Ostrom",
       "keyTakeaway": "Why shared resources collapse under individual self-interest and how private or institutional rules enforce order.",
-      "readingMinutes": 30,
+      "readingMinutes": 60,
       "domain": "world",
       "icon": "📜"
     },
@@ -47,7 +47,7 @@
       "author": "Robert Axelrod",
       "primaryText": "The Evolution of Cooperation by Robert Axelrod",
       "keyTakeaway": "How iterated Prisoner's Dilemmas work in the real world, and when \"Tit-for-Tat\" or defection wins.",
-      "readingMinutes": 30,
+      "readingMinutes": 60,
       "domain": "mind",
       "icon": "🤝"
     },
@@ -59,7 +59,7 @@
       "author": "Peter Thiel (Stanford CS183)",
       "primaryText": "Zero to One by Peter Thiel (Stanford CS183)",
       "keyTakeaway": "Why competition destroys profits and how founders build monopolies to escape multipolar traps.",
-      "readingMinutes": 30,
+      "readingMinutes": 60,
       "domain": "money",
       "icon": "💰"
     },
@@ -71,7 +71,7 @@
       "author": "Bruce Bueno de Mesquita & Alastair Smith",
       "primaryText": "The Dictator's Handbook by Bruce Bueno de Mesquita & Alastair Smith",
       "keyTakeaway": "Selectorate theory: why leaders and CEOs act the way they do based purely on keeping their \"winning coalition\" paid.",
-      "readingMinutes": 30,
+      "readingMinutes": 60,
       "domain": "world",
       "icon": "👑"
     },
@@ -83,7 +83,7 @@
       "author": "Theo Baker (2026)",
       "primaryText": "How to Rule the World: An Education in Power at Stanford University by Theo Baker (2026)",
       "keyTakeaway": "The investigative account of the \"Rule\" seminar, Stanford's VC shadow networks, and the ethical fallout of this mindset.",
-      "readingMinutes": 30,
+      "readingMinutes": 60,
       "domain": "world",
       "icon": "🔍"
     }

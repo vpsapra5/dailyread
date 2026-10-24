@@ -94,7 +94,7 @@ function getDefaultSettings() {
     notifyTime: '21:00',
     days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     fictionRatio: 0.3,
-    summaryMinutes: 30,
+    summaryMinutes: 60,
     wpm: 230,
     weights: {},
     browserNotify: false,
@@ -339,30 +339,40 @@ async function generateSummary(bookId) {
   const preferredModel = process.env.GEMINI_MODEL || getSettings().model || 'gemini-3.8-flash';
   const modelList = [preferredModel, ...GEMINI_MODELS.filter(m => m !== preferredModel)];
 
-  const prompt = `You are a world-class literary analyst and intellectual speed-reader. 
-Create an exhaustive, highly structured, practical 30-minute book summary for:
+  const prompt = `You are a world-class literary analyst, philosopher, and executive educator. 
+Create an exhaustive, highly structured, masterclass 60-minute (1-hour) deep book summary for:
 "${book.title}" by ${book.author} (Category: ${book.catName}).
+
+CRITICAL LENGTH REQUIREMENT:
+At 230 words per minute, a true 60-minute deep read requires at least 14,000 words. You MUST write in exhaustive, granular, unhurried detail across all sections with complete case studies, multi-page chapter breakdowns, and concrete mechanisms. Do not summarize superficially.
 
 Structure your summary in pristine Markdown with:
 # ${book.title}
 *By ${book.author} • Category: ${book.catName}*
 
-## Executive Summary: The Big Idea
-(A punchy 3-4 paragraph thesis explaining why this book matters and its core paradigm shift).
+## Executive Summary: The Big Idea & Paradigm Shift
+(Exhaustive 800-1,000 words explaining the foundational thesis, historical intellectual context, and systemic paradigm shift).
 
-## 3 Core Mental Models & Takeaways
-1. **Model 1**: Description and concrete application.
-2. **Model 2**: Description and concrete application.
-3. **Model 3**: Description and concrete application.
+## Historical & Philosophical Context
+(Comprehensive 1,000 words analyzing why this book was written, the author's background, and what cultural/economic crisis it responded to).
 
-## Chapter-by-Chapter Deep Dive Breakdown
-(Break down the critical chapters with actionable explanations, real-world examples, and memorable case studies).
+## Chapter-by-Chapter Masterclass Breakdown
+(Granular 8,000-9,000 words breaking down every major chapter/part with deep analytical rigor, evidence, experiments, historical vignettes, and step-by-step logic).
 
-## Actionable 7-Day Implementation Plan
-(Clear, pragmatic daily steps to immediately apply these ideas).
+## 10 Applied Mental Models & Strategic Frameworks
+(Exhaustive 3,000 words covering 10 distinct models, each with theoretical mechanics, concrete industry/personal applications, edge cases, and failure modes).
 
-## Memorable Quotes & Critical Takeaway
-(5 powerful quotes from the book with brief commentary).
+## Counter-Arguments, Objections & Blind Spots
+(Detailed 1,000 words critiquing the book's limitations, ideological biases, or boundary conditions where its ideas fail).
+
+## Actionable 30-Day Implementation Playbook
+(Structured checklist and daily cadence to put these principles into relentless practice).
+
+## Memorable Attributed Quotes & Deep Exegesis
+(7 profound quotes with rigorous commentary and thematic significance).
+
+## Interactive 5-Question Comprehension & Synthesis Quiz
+(5 challenging scenario questions with collapsible details/summary answers).
 `;
 
   let lastError = null;
@@ -423,11 +433,11 @@ Structure your summary in pristine Markdown with:
         
         try {
           fs.writeFileSync(mdPath, cleanText, 'utf-8');
-          fs.writeFileSync(jsonPath, JSON.stringify({ minutes: 30, generatedAt: new Date().toISOString(), model, thinking: 'high', words }, null, 2), 'utf-8');
+          fs.writeFileSync(jsonPath, JSON.stringify({ minutes: 60, generatedAt: new Date().toISOString(), model, thinking: 'high', words }, null, 2), 'utf-8');
         } catch (e) {
           try {
             fs.writeFileSync(path.join('/tmp', `${bookId}.md`), cleanText, 'utf-8');
-            fs.writeFileSync(path.join('/tmp', `${bookId}.json`), JSON.stringify({ minutes: 30, generatedAt: new Date().toISOString(), model, thinking: 'high', words }, null, 2), 'utf-8');
+            fs.writeFileSync(path.join('/tmp', `${bookId}.json`), JSON.stringify({ minutes: 60, generatedAt: new Date().toISOString(), model, thinking: 'high', words }, null, 2), 'utf-8');
           } catch (e2) { }
         }
         return cleanText;
@@ -518,7 +528,7 @@ async function sendDailyEmail(book, targetEmail) {
 
   const hostUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : (process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`);
   const phoneUrl = `${hostUrl}/#/read/${book.id}`;
-  const html = buildEmailHtml(book, phoneUrl, settings.summaryMinutes || 30);
+  const html = buildEmailHtml(book, phoneUrl, settings.summaryMinutes || 60);
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -531,7 +541,7 @@ async function sendDailyEmail(book, targetEmail) {
   const info = await transporter.sendMail({
     from: `"DailyRead" <${sender}>`,
     to: to,
-    subject: `📚 Tonight's 30-Min Read: ${book.title} by ${book.author}`,
+    subject: `📚 Tonight's 1-Hour Read: ${book.title} by ${book.author}`,
     html: html
   });
 
@@ -722,7 +732,7 @@ app.post('/api/books', (req, res) => {
     title,
     author: author || 'Unknown',
     cat: cat || 'selfhelp',
-    desc: `A curated 30-minute synthesis of ${title} by ${author || 'Unknown'}.`,
+    desc: `A curated 1-hour synthesis of ${title} by ${author || 'Unknown'}.`,
     custom: true
   };
   custom.push(newBook);

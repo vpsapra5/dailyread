@@ -1,8 +1,7 @@
 {
-  "bookId": "meditations-on-moloch",
-  "words": 6835,
-  "minutes": 30,
-  "model": "opus-frontier-cognition",
-  "domain": "mind",
-  "generatedAt": "2026-10-24T20:44:39.977Z"
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:09:56.048Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 13905
 }

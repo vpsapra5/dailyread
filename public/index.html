@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyRead — 30-Minute Daily Book Summaries</title>
-  <meta name="description" content="Read one high-impact 30-minute book summary every day from the world's greatest books across finance, psychology, philosophy, sci-fi and growth.">
+  <title>DailyRead — 1-Hour Daily Book Summaries</title>
+  <meta name="description" content="Read one high-impact 1-hour book summary every day from the world's greatest books across finance, psychology, philosophy, sci-fi and growth.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -86,7 +86,7 @@
             <div class="today-eyebrow">
               <span class="daily-tag" id="today-date-label">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                TODAY'S 30-MIN READ
+                TODAY'S 1-HOUR READ
               </span>
               <span class="category-chip" id="today-category-badge">🌱 Self-Help & Habits</span>
             </div>
@@ -111,7 +111,7 @@
                 <div class="reading-meta-bar">
                   <span class="meta-pill meta-pill-accent" id="today-reading-time">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    ~30 min read (6,500 words)
+                    ~60 min read (14,000 words)
                   </span>
                   <span class="meta-pill" id="today-domain-pill">Domain: Mind</span>
                   <span class="meta-pill" id="today-reminder-pill">
@@ -127,7 +127,7 @@
                 <div class="hero-actions">
                   <button class="btn btn-primary" id="today-start-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    Start 30-Min Read
+                    Start 1-Hour Read
                   </button>
                   <button class="btn btn-secondary" id="today-skip-btn" title="Skip to another book today">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
@@ -145,7 +145,7 @@
             <div class="status-banner ready" id="today-status-banner">
               <div style="display:flex; align-items:center; gap: 0.6rem;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span id="status-banner-text">Summary is ready for your 30-minute daily session.</span>
+                <span id="status-banner-text">Full 1-hour deep summary is ready for your daily session.</span>
               </div>
               <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.8rem;" id="regenerate-summary-btn">Regenerate</button>
             </div>
@@ -355,7 +355,7 @@
                 DAILY SUMMARY ARCHIVE
               </div>
               <h1 class="archive-title">Past Daily Reads & Catch-Up</h1>
-              <p class="archive-subtitle">Read missed 30-minute books, review key takeaways, and mark any day complete.</p>
+              <p class="archive-subtitle">Read missed 1-hour books, review key takeaways, and mark any day complete.</p>
             </div>
 
             <!-- Stats Ribbon -->
@@ -414,7 +414,7 @@
               <span>CURATED READING CURRICULA</span>
             </div>
             <h1 class="courses-main-title">Executive Reading Programs</h1>
-            <p class="courses-main-subtitle">Multi-book syllabi designed to build mental models and strategic perspective. Select a course below to explore its comprehensive 30-minute book breakdowns.</p>
+            <p class="courses-main-subtitle">Multi-book syllabi designed to build mental models and strategic perspective. Select a course below to explore its comprehensive 1-hour book breakdowns.</p>
           </div>
 
           <!-- Courses List Grid -->
@@ -585,7 +585,7 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
               <div>
                 <h2 class="settings-section-title">📧 Daily Email Delivery (9:00 PM)</h2>
-                <p class="settings-section-desc">Get tonight's 30-minute book summary delivered to your inbox every evening so you can read right on your phone or in Gmail.</p>
+                <p class="settings-section-desc">Get tonight's 1-hour book summary delivered to your inbox every evening so you can read right on your phone or in Gmail.</p>
               </div>
               <label style="display:inline-flex; align-items:center; gap:0.6rem; cursor:pointer; background:rgba(255,255,255,0.06); padding:0.4rem 0.9rem; border-radius:9999px; border:1px solid var(--border-subtle); font-size:0.85rem; font-weight:600;">
                 <input type="checkbox" id="setting-email-enabled" checked style="accent-color:var(--accent-gold); width:16px; height:16px;">
@@ -622,7 +622,7 @@
               <div class="form-group" style="margin-top:1.2rem;">
                 <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-size:0.9rem; color:var(--text-primary);">
                   <input type="checkbox" id="setting-email-full-summary" style="accent-color:var(--accent-gold); width:16px; height:16px;">
-                  <span>Include the <strong>entire full 30-minute book summary</strong> directly in the email body</span>
+                  <span>Include the <strong>entire full 1-hour book summary</strong> directly in the email body</span>
                 </label>
               </div>
 
@@ -649,7 +649,7 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
               <div>
                 <h2 class="settings-section-title">📱 Mobile Phone & Tablet Access</h2>
-                <p class="settings-section-desc">Read your daily 30-minute book summary on your iPhone, iPad, or Android phone with Kindle-style page flipping.</p>
+                <p class="settings-section-desc">Read your daily 1-hour book summary on your iPhone, iPad, or Android phone with Kindle-style page flipping.</p>
               </div>
               <span class="badge" id="mobile-status-badge" style="background:rgba(245, 158, 11, 0.15); color:var(--accent-gold); border:1px solid rgba(245, 158, 11, 0.3); padding:0.35rem 0.75rem; border-radius:var(--radius-full); font-size:0.8rem; font-weight:600;">
                 Checking Wi-Fi...
@@ -696,9 +696,10 @@
               <div class="form-group">
                 <label class="form-label" for="setting-summary-minutes">Summary Length</label>
                 <select class="form-input" id="setting-summary-minutes">
-                  <option value="15">15 Minutes (~3,500 words)</option>
-                  <option value="30" selected>30 Minutes (~6,500 words) [Recommended]</option>
-                  <option value="45">45 Minutes (~9,500 words)</option>
+                  <option value="30">30 Minutes (~6,900 words)</option>
+                  <option value="45">45 Minutes (~10,350 words)</option>
+                  <option value="60" selected>60 Minutes / 1 Hour (~14,000 words) [Default]</option>
+                  <option value="90">90 Minutes (~20,700 words)</option>
                 </select>
               </div>
 

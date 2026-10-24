@@ -1,8 +1,7 @@
 {
-  "bookId": "the-dictators-handbook",
-  "words": 6044,
-  "minutes": 26,
-  "model": "opus-frontier-cognition",
-  "domain": "world",
-  "generatedAt": "2026-10-24T20:51:55.694Z"
+  "minutes": 60,
+  "generatedAt": "2026-10-24T21:27:52.617Z",
+  "model": "frontier-curriculum-v2",
+  "thinking": "high",
+  "words": 13879
 }
